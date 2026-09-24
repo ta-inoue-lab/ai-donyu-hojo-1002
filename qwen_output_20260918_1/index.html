@@ -1,0 +1,975 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>HubSpot導入支援｜CRM・営業DX・AI活用まで伴走</title>
+<meta name="description" content="HubSpotの導入・初期構築からCRM設計、営業DX、マーケティング、自動化、AI活用、運用定着まで伴走。デジタル化・AI導入補助金の活用についてもご相談いただけます。" />
+<meta name="theme-color" content="#213545" />
+<link rel="preconnect" href="https://cdn.jsdelivr.net" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-sans-jp@5.0.0/500.css" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/noto-sans-jp@5.0.0/700.css" />
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue@3.4.27/dist/vue.global.prod.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/animejs@3.2.2/lib/anime.min.js"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          brand: {
+            DEFAULT: '#213545',
+            light: '#2c4659',
+            dark: '#172631',
+          },
+          gold: '#B89B5E',
+          paper: '#F7F8F7',
+          paper2: '#F2F4F3',
+          ink: '#213545',
+          ink2: '#333333',
+          ink3: '#555555',
+          line: '#d8dcda',
+        },
+        fontFamily: {
+          sans: ['"Noto Sans JP"', 'system-ui', 'sans-serif'],
+        },
+      },
+    },
+  };
+</script>
+<style>
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Noto Sans JP', system-ui, sans-serif;
+    color: #213545;
+    background: #ffffff;
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.9;
+    letter-spacing: 0.02em;
+  }
+  .en-label {
+    font-family: 'Noto Sans JP', sans-serif;
+    letter-spacing: 0.22em;
+    font-size: 0.72rem;
+    color: #B89B5E;
+    font-weight: 700;
+  }
+  .section-title {
+    font-weight: 700;
+    line-height: 1.4;
+    letter-spacing: 0.02em;
+  }
+  .hairline { border-color: #d8dcda; }
+  .fade-up { opacity: 0; transform: translateY(18px); }
+  .fade-up.is-visible { opacity: 1; transform: translateY(0); transition: opacity .8s ease, transform .8s ease; }
+  @media (prefers-reduced-motion: reduce) {
+    .fade-up { opacity: 1; transform: none; transition: none; }
+    html { scroll-behavior: auto; }
+    * { animation: none !important; transition: none !important; }
+  }
+  details > summary { list-style: none; cursor: pointer; }
+  details > summary::-webkit-details-marker { display: none; }
+  details[open] .faq-icon { transform: rotate(45deg); }
+  .faq-icon { transition: transform .3s ease; }
+  .btn-primary {
+    background: #213545; color: #fff;
+    transition: background .25s ease, transform .25s ease;
+  }
+  .btn-primary:hover { background: #2c4659; }
+  .btn-ghost {
+    border: 1px solid #213545; color: #213545;
+    transition: background .25s ease, color .25s ease;
+  }
+  .btn-ghost:hover { background: #213545; color: #fff; }
+  .header-scrolled { box-shadow: 0 1px 0 rgba(33,53,69,.08); }
+  .input-field {
+    border: 1px solid #d8dcda;
+    background: #fff;
+    transition: border-color .2s ease, box-shadow .2s ease;
+  }
+  .input-field:focus {
+    outline: none;
+    border-color: #213545;
+    box-shadow: 0 0 0 3px rgba(33,53,69,.08);
+  }
+  .flow-line {
+    background-image: linear-gradient(to bottom, #d8dcda 50%, transparent 50%);
+    background-size: 1px 14px;
+    background-repeat: repeat-y;
+  }
+  .timeline-dot::before {
+    content: '';
+    position: absolute;
+    left: -6px; top: 14px;
+    width: 12px; height: 12px;
+    background: #213545;
+    border-radius: 2px;
+  }
+  .timeline-line {
+    background: #d8dcda;
+  }
+  .scroll-x::-webkit-scrollbar { height: 6px; }
+  .scroll-x::-webkit-scrollbar-thumb { background: #cfd4d1; border-radius: 3px; }
+  .mobile-menu { transition: opacity .25s ease, transform .25s ease; }
+  .kv-num {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 700;
+    color: #B89B5E;
+    letter-spacing: 0.05em;
+  }
+  @media (max-width: 767px) {
+    .section-title { font-size: 1.5rem !important; line-height: 1.5; }
+  }
+</style>
+</head>
+<body>
+<div id="app"></div>
+
+<script>
+const { createApp, ref, reactive, computed, onMounted, onUnmounted, nextTick } = Vue;
+
+/* ---------------- Header ---------------- */
+const Header = {
+  template: `
+  <header class="fixed top-0 inset-x-0 z-50 bg-white/95 backdrop-blur" :class="{'header-scrolled': scrolled}">
+    <div class="max-w-[1200px] mx-auto px-5 md:px-8 h-16 md:h-[68px] flex items-center justify-between">
+      <a href="#top" class="flex items-baseline gap-2">
+        <span class="text-[15px] md:text-base font-bold tracking-tight text-brand">HubSpot導入支援</span>
+        <span class="hidden sm:inline text-[10px] tracking-[0.22em] text-gold font-bold">IMPLEMENTATION SUPPORT</span>
+      </a>
+      <nav class="hidden lg:flex items-center gap-7 text-[13px] text-ink2">
+        <a href="#support" class="hover:text-brand">サービス内容</a>
+        <a href="#pricing" class="hover:text-brand">料金</a>
+        <a href="#process" class="hover:text-brand">導入の流れ</a>
+        <a href="#faq" class="hover:text-brand">FAQ</a>
+        <a href="#contact" class="btn-primary px-5 py-2 text-white text-[13px]">無料相談はこちら</a>
+      </nav>
+      <button @click="open = !open" class="lg:hidden w-10 h-10 flex flex-col items-center justify-center gap-1.5" aria-label="メニュー">
+        <span class="block w-5 h-px bg-brand transition" :class="{'rotate-45 translate-y-[3.5px]': open}"></span>
+        <span class="block w-5 h-px bg-brand transition" :class="{'opacity-0': open}"></span>
+        <span class="block w-5 h-px bg-brand transition" :class="{'-rotate-45 -translate-y-[3.5px]': open}"></span>
+      </button>
+    </div>
+    <div v-if="open" class="lg:hidden border-t hairline bg-white">
+      <nav class="px-5 py-4 flex flex-col gap-4 text-[14px] text-ink2">
+        <a @click="open=false" href="#support" class="py-2 border-b hairline">サービス内容</a>
+        <a @click="open=false" href="#pricing" class="py-2 border-b hairline">料金</a>
+        <a @click="open=false" href="#process" class="py-2 border-b hairline">導入の流れ</a>
+        <a @click="open=false" href="#faq" class="py-2 border-b hairline">FAQ</a>
+        <a @click="open=false" href="#contact" class="btn-primary text-center py-3 text-white">無料相談はこちら</a>
+      </nav>
+    </div>
+  </header>`,
+  setup() {
+    const scrolled = ref(false);
+    const open = ref(false);
+    const onScroll = () => { scrolled.value = window.scrollY > 8; };
+    onMounted(() => { window.addEventListener('scroll', onScroll); });
+    onUnmounted(() => { window.removeEventListener('scroll', onScroll); });
+    return { scrolled, open };
+  }
+};
+
+/* ---------------- Hero ---------------- */
+const Hero = {
+  template: `
+  <section id="top" class="pt-28 md:pt-36 pb-20 md:pb-28 bg-paper relative overflow-hidden">
+    <canvas ref="canvas" class="absolute inset-0 w-full h-full pointer-events-none opacity-[0.35]"></canvas>
+    <div class="relative max-w-[1200px] mx-auto px-5 md:px-8 grid md:grid-cols-12 gap-10 md:gap-12 items-center">
+      <div class="md:col-span-7">
+        <p class="en-label fade-up">HUBSPOT IMPLEMENTATION SUPPORT</p>
+        <h1 class="section-title text-[28px] md:text-[42px] mt-5 md:mt-6 leading-[1.35] fade-up">
+          HubSpotを、<br class="md:hidden" />
+          導入して終わりにしない。
+        </h1>
+        <p class="mt-6 md:mt-8 text-[14px] md:text-[15px] text-ink3 leading-[2] fade-up">
+          CRM・営業・マーケティング・AI活用まで。<br />
+          御社の業務に合わせたHubSpot導入を、<br class="hidden md:inline" />
+          設計から運用定着まで伴走します。
+        </p>
+        <p class="mt-4 text-[13px] text-ink3 fade-up">
+          ※ デジタル化・AI導入補助金の活用についてもご相談いただけます。
+        </p>
+        <div class="mt-8 md:mt-10 flex flex-col sm:flex-row gap-3 fade-up">
+          <a href="#contact" class="btn-primary px-7 py-3.5 text-center text-[14px]">無料相談・導入相談はこちら</a>
+          <a href="#support" class="btn-ghost px-7 py-3.5 text-center text-[14px]">サービス内容を見る</a>
+        </div>
+      </div>
+      <div class="md:col-span-5 fade-up">
+        <div class="aspect-[4/5] bg-white border hairline relative overflow-hidden">
+          <div class="absolute inset-0 p-8 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center gap-2 text-[11px] tracking-[0.2em] text-gold font-bold">
+                <span class="w-6 h-px bg-gold"></span>
+                <span>DESIGN · BUILD · RUN</span>
+              </div>
+              <p class="mt-6 text-[15px] md:text-[17px] text-brand leading-[1.9] font-medium">
+                業務に合わせたCRM設計。<br />
+                営業・マーケティングの仕組み化。<br />
+                数据を活かしたAI活用まで。
+              </p>
+            </div>
+            <div class="border-t hairline pt-5 space-y-2 text-[12px] text-ink3">
+              <div class="flex justify-between"><span>01</span><span>現状ヒアリング / 業務設計</span></div>
+              <div class="flex justify-between"><span>02</span><span>HubSpot初期構築</span></div>
+              <div class="flex justify-between"><span>03</span><span>運用・改善・AI活用</span></div>
+            </div>
+          </div>
+          <div class="absolute top-0 right-0 w-32 h-32 bg-brand/5"></div>
+          <div class="absolute bottom-0 left-0 w-20 h-20 bg-gold/10"></div>
+        </div>
+      </div>
+    </div>
+    <div class="relative max-w-[1200px] mx-auto px-5 md:px-8 mt-16 md:mt-20 border-t hairline pt-6">
+      <ul class="flex flex-wrap gap-x-6 gap-y-2 text-[12px] md:text-[13px] text-ink3">
+        <li>HubSpot導入</li>
+        <li>CRM構築</li>
+        <li>営業DX</li>
+        <li>マーケティング自動化</li>
+        <li>AI活用</li>
+        <li>補助金活用相談</li>
+      </ul>
+    </div>
+  </section>`,
+  setup() {
+    const canvas = ref(null);
+    onMounted(() => {
+      if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      const c = canvas.value; if (!c) return;
+      const ctx = c.getContext('2d');
+      let w, h, dpr = Math.min(window.devicePixelRatio || 1, 2);
+      const resize = () => {
+        w = c.clientWidth; h = c.clientHeight;
+        c.width = w * dpr; c.height = h * dpr;
+        ctx.scale(dpr, dpr);
+      };
+      resize();
+      const nodes = Array.from({length: 22}, () => ({
+        x: Math.random() * w, y: Math.random() * h,
+        vx: (Math.random() - 0.5) * 0.15, vy: (Math.random() - 0.5) * 0.15,
+      }));
+      let raf;
+      const draw = () => {
+        ctx.clearRect(0, 0, w, h);
+        ctx.strokeStyle = 'rgba(33,53,69,0.08)';
+        ctx.lineWidth = 1;
+        for (let i = 0; i < nodes.length; i++) {
+          const a = nodes[i];
+          a.x += a.vx; a.y += a.vy;
+          if (a.x < 0 || a.x > w) a.vx *= -1;
+          if (a.y < 0 || a.y > h) a.vy *= -1;
+          for (let j = i + 1; j < nodes.length; j++) {
+            const b = nodes[j];
+            const dx = a.x - b.x, dy = a.y - b.y;
+            const d = Math.sqrt(dx*dx + dy*dy);
+            if (d < 140) {
+              ctx.globalAlpha = (1 - d / 140) * 0.5;
+              ctx.beginPath();
+              ctx.moveTo(a.x, a.y); ctx.lineTo(b.x, b.y);
+              ctx.stroke();
+            }
+          }
+        }
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = 'rgba(33,53,69,0.35)';
+        nodes.forEach(n => { ctx.fillRect(n.x - 1, n.y - 1, 2, 2); });
+        raf = requestAnimationFrame(draw);
+      };
+      draw();
+      window.addEventListener('resize', () => { resize(); });
+    });
+  }
+};
+
+/* ---------------- Problems ---------------- */
+const Problems = {
+  template: `
+  <section class="py-20 md:py-28 bg-white">
+    <div class="max-w-[1200px] mx-auto px-5 md:px-8">
+      <p class="en-label fade-up">01 / PROBLEM</p>
+      <h2 class="section-title text-[22px] md:text-[32px] mt-4 fade-up">
+        HubSpotを検討しているものの、<br class="md:hidden" />
+        こんな課題はありませんか？
+      </h2>
+      <div class="mt-10 md:mt-14 grid md:grid-cols-2 gap-x-16">
+        <ul class="divide-y hairline border-t hairline">
+          <li v-for="(p, i) in left" :key="i" class="py-5 flex gap-5 items-start fade-up">
+            <span class="kv-num text-[13px] mt-1">0{{i+1}}</span>
+            <span class="text-[14px] md:text-[15px] text-ink2 leading-[1.9]">{{p}}</span>
+          </li>
+        </ul>
+        <ul class="divide-y hairline border-t hairline mt-6 md:mt-0">
+          <li v-for="(p, i) in right" :key="i" class="py-5 flex gap-5 items-start fade-up">
+            <span class="kv-num text-[13px] mt-1">0{{i+5}}</span>
+            <span class="text-[14px] md:text-[15px] text-ink2 leading-[1.9]">{{p}}</span>
+          </li>
+        </ul>
+      </div>
+      <div class="mt-14 md:mt-20 max-w-[820px] fade-up">
+        <div class="border-l-2 border-gold pl-6 md:pl-8">
+          <p class="text-[18px] md:text-[24px] leading-[1.7] font-medium text-brand">
+            ツールを導入することが目的ではありません。<br />
+            業務が変わるところまで、一緒に設計します。
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>`,
+  setup() {
+    const left = [
+      '顧客情報がExcelやスプレッドシートに分散している',
+      '営業担当者ごとに顧客管理の方法が違う',
+      '問い合わせ後のフォローが属人的になっている',
+      'Webから問い合わせは来るが、その後の営業管理ができていない',
+    ];
+    const right = [
+      'CRMやMAを導入したいが、何をどう設計すればいいかわからない',
+      'HubSpotを導入したものの、十分に活用できていない',
+      'AIを業務に取り入れたいが、具体的な使い道がわからない',
+      '補助金を利用してデジタル化を進めたい',
+    ];
+    return { left, right };
+  }
+};
+
+/* ---------------- HubspotFlow ---------------- */
+const HubspotFlow = {
+  template: `
+  <section class="py-20 md:py-28 bg-paper">
+    <div class="max-w-[1200px] mx-auto px-5 md:px-8">
+      <p class="en-label fade-up">02 / WHAT CHANGES</p>
+      <h2 class="section-title text-[22px] md:text-[32px] mt-4 fade-up">
+        問い合わせから受注までを、<br class="md:hidden" />
+        ひとつの流れに。
+      </h2>
+      <div class="mt-12 md:mt-16 grid md:grid-cols-12 gap-10">
+        <ol class="md:col-span-7 divide-y hairline border-t hairline">
+          <li v-for="(s, i) in steps" :key="i" class="py-5 flex gap-6 items-start fade-up">
+            <span class="kv-num text-[13px] mt-1 shrink-0">0{{i+1}}</span>
+            <div>
+              <p class="text-[15px] md:text-[16px] font-medium text-brand">{{s.title}}</p>
+              <p class="text-[13px] text-ink3 mt-1">{{s.desc}}</p>
+            </div>
+          </li>
+        </ol>
+        <aside class="md:col-span-5 md:pl-10 md:border-l hairline fade-up">
+          <p class="en-label">FLOW</p>
+          <p class="mt-4 text-[14px] md:text-[15px] text-ink2 leading-[2]">
+            HubSpotをCRMの中心に置くことで、顧客情報・営業活動・マーケティング施策を一つの流れとして管理できる環境を設計します。
+          </p>
+          <div class="mt-8 border-t hairline pt-6">
+            <p class="text-[12px] tracking-[0.2em] text-gold font-bold">CORE AREAS</p>
+            <ul class="mt-4 grid grid-cols-2 gap-y-2 text-[13px] text-ink2">
+              <li>・CRM</li>
+              <li>・営業</li>
+              <li>・マーケティング</li>
+              <li>・自動化</li>
+              <li>・AI</li>
+              <li>・データ分析</li>
+            </ul>
+          </div>
+        </aside>
+      </div>
+    </div>
+  </section>`,
+  setup() {
+    const steps = [
+      { title: '問い合わせ', desc: 'Webサイト・メール・電話など、あらゆる接点から情報が集まる状態' },
+      { title: '顧客情報を自動登録', desc: 'HubSpot CRMへ連絡先・企業情報が整理されて蓄積' },
+      { title: '営業担当へ通知', desc: '担当者に自動で割り当て・通知され、対応漏れを防止' },
+      { title: '商談管理', desc: 'パイプライン上で案件の状況・次のアクションを可視化' },
+      { title: 'メール・フォロー', desc: 'テンプレートや自動化で、適切なタイミングのフォローを実現' },
+      { title: '成約', desc: '受注までのプロセスを記録し、再現性のある営業へ' },
+      { title: '顧客情報を蓄積', desc: '取引履歴・対応記録が資産として残り、組織で共有' },
+      { title: 'AI・データ分析', desc: '蓄積されたデータをもとに、AI活用・分析・改善を実施' },
+    ];
+    return { steps };
+  }
+};
+
+/* ---------------- HubspotAiSubsidy ---------------- */
+const HubspotAiSubsidy = {
+  template: `
+  <section class="py-20 md:py-28 bg-paper2">
+    <div class="max-w-[1200px] mx-auto px-5 md:px-8">
+      <p class="en-label fade-up">03 / APPROACH</p>
+      <h2 class="section-title text-[22px] md:text-[32px] mt-4 fade-up">
+        HubSpotだけではなく、<br class="md:hidden" />
+        これからの業務まで設計する。
+      </h2>
+      <div class="mt-12 md:mt-16 grid md:grid-cols-3 border-t border-l hairline">
+        <div v-for="(c, i) in cols" :key="i" class="border-r border-b hairline p-7 md:p-10 fade-up">
+          <p class="kv-num text-[13px]">0{{i+1}}</p>
+          <p class="en-label mt-3">{{c.label}}</p>
+          <h3 class="mt-3 text-[18px] md:text-[20px] font-bold text-brand">{{c.title}}</h3>
+          <p class="mt-4 text-[13.5px] md:text-[14px] text-ink3 leading-[2]">{{c.desc}}</p>
+        </div>
+      </div>
+      <div class="mt-12 md:mt-16 max-w-[820px] fade-up">
+        <p class="text-[14px] md:text-[15px] text-ink2 leading-[2]">
+          補助金ありきでツールを選ぶのではなく、まず自社に必要な業務改善を整理します。そのうえで、利用可能な制度があれば活用を検討するという姿勢で支援しています。
+        </p>
+      </div>
+    </div>
+  </section>`,
+  setup() {
+    const cols = [
+      { label: 'HUBSPOT', title: '顧客・営業・マーケティングを一元管理', desc: 'CRMを中心に、営業プロセス・マーケティング施策・顧客情報を一貫した流れで設計します。' },
+      { label: 'AI', title: '業務に合ったAI活用を整理', desc: '問い合わせ対応、情報整理、コンテンツ作成など、AIを活かせる業務を具体的に整理します。' },
+      { label: 'SUBSIDY', title: '制度を確認しながら導入計画を検討', desc: '対象となる制度や要件を確認しながら、導入計画と費用感の整理をお手伝いします。' },
+    ];
+    return { cols };
+  }
+};
+
+/* ---------------- Features ---------------- */
+const Features = {
+  template: `
+  <section class="py-20 md:py-28 bg-white">
+    <div class="max-w-[1200px] mx-auto px-5 md:px-8">
+      <p class="en-label fade-up">04 / FEATURE</p>
+      <h2 class="section-title text-[22px] md:text-[32px] mt-4 fade-up">
+        導入だけではなく、<br class="md:hidden" />
+        使い続けられるところまで。
+      </h2>
+      <div class="mt-12 md:mt-16 grid md:grid-cols-2 gap-x-16 gap-y-10">
+        <div v-for="f in items" :key="f.no" class="border-t hairline pt-6 fade-up">
+          <div class="flex items-baseline gap-4">
+            <span class="kv-num text-[14px]">{{f.no}}</span>
+            <h3 class="text-[17px] md:text-[19px] font-bold text-brand">{{f.title}}</h3>
+          </div>
+          <p class="mt-4 text-[14px] text-ink3 leading-[2]">{{f.desc}}</p>
+        </div>
+      </div>
+    </div>
+  </section>`,
+  setup() {
+    const items = [
+      { no: '01', title: '現状の業務から設計', desc: 'HubSpotの機能に業務を合わせるのではなく、現在の営業・顧客管理・マーケティング業務を整理したうえで設計します。' },
+      { no: '02', title: '初期構築まで対応', desc: 'CRM、プロパティ、パイプライン、フォーム、ワークフローなどを、御社の業務に合わせて設計・構築します。' },
+      { no: '03', title: 'AI活用まで視野に入れる', desc: 'HubSpotに蓄積されるデータを活用し、AIによる業務効率化・情報活用までを見据えた設計を行います。' },
+      { no: '04', title: '導入後も伴走', desc: '納品して終了ではありません。運用開始後の改善・活用まで、継続的に支援します。' },
+    ];
+    return { items };
+  }
+};
+
+/* ---------------- SupportContents ---------------- */
+const SupportContents = {
+  template: `
+  <section id="support" class="py-20 md:py-28 bg-paper">
+    <div class="max-w-[1200px] mx-auto px-5 md:px-8">
+      <p class="en-label fade-up">05 / SUPPORT CONTENTS</p>
+      <h2 class="section-title text-[22px] md:text-[32px] mt-4 fade-up">
+        HubSpot導入を、<br class="md:hidden" />
+        8つのステップで支援します。
+      </h2>
+      <ol class="mt-12 md:mt-16 border-t hairline">
+        <li v-for="s in steps" :key="s.no" class="border-b hairline py-6 md:py-7 grid md:grid-cols-12 gap-4 md:gap-8 items-start fade-up">
+          <div class="md:col-span-2 flex md:block gap-4 items-baseline">
+            <span class="kv-num text-[14px]">{{s.no}}</span>
+            <span class="text-[11px] tracking-[0.2em] text-ink3 md:mt-2 md:block">{{s.label}}</span>
+          </div>
+          <div class="md:col-span-4">
+            <h3 class="text-[16px] md:text-[18px] font-bold text-brand">{{s.title}}</h3>
+          </div>
+          <p class="md:col-span-6 text-[13.5px] md:text-[14px] text-ink3 leading-[2]">{{s.desc}}</p>
+        </li>
+      </ol>
+    </div>
+  </section>`,
+  setup() {
+    const steps = [
+      { no: '01', label: 'HEARING', title: '現状ヒアリング', desc: '現在の営業・顧客管理・マーケティング業務を整理します。' },
+      { no: '02', label: 'DESIGN', title: '業務設計', desc: 'HubSpotで管理する情報・業務フローを設計します。' },
+      { no: '03', label: 'SETUP', title: 'HubSpot初期設定', desc: 'CRM・ユーザー・権限・プロパティなどを設定します。' },
+      { no: '04', label: 'SALES', title: '営業・案件管理', desc: 'パイプラインや営業プロセスを構築します。' },
+      { no: '05', label: 'WEB', title: 'Web・フォーム連携', desc: 'Webサイトからの問い合わせをCRMへ接続します。' },
+      { no: '06', label: 'AUTOMATION', title: '自動化', desc: 'フォローアップ・通知・タスクなどを自動化します。' },
+      { no: '07', label: 'AI', title: 'AI活用', desc: 'AIを活用できる業務を整理・実装します。' },
+      { no: '08', label: 'RUN', title: '運用支援', desc: '導入後の改善・活用を継続的に支援します。' },
+    ];
+    return { steps };
+  }
+};
+
+/* ---------------- Pricing ---------------- */
+const Pricing = {
+  template: `
+  <section id="pricing" class="py-20 md:py-28 bg-white">
+    <div class="max-w-[1200px] mx-auto px-5 md:px-8">
+      <p class="en-label fade-up">06 / PLAN</p>
+      <h2 class="section-title text-[22px] md:text-[32px] mt-4 fade-up">
+        支援内容に合わせて、<br class="md:hidden" />
+        3つのプランをご用意しています。
+      </h2>
+      <p class="mt-5 text-[13px] text-ink3 fade-up">
+        ※ 下記は当社の導入支援・構築・伴走にかかる費用です。HubSpotのサービス利用料金は別途必要となります。
+      </p>
+      <div class="mt-12 md:mt-16 grid md:grid-cols-3 border-t border-l hairline">
+        <div v-for="p in plans" :key="p.name" class="border-r border-b hairline p-7 md:p-9 flex flex-col fade-up">
+          <p class="en-label">{{p.label}}</p>
+          <h3 class="mt-2 text-[20px] md:text-[22px] font-bold text-brand tracking-tight">{{p.name}}</h3>
+          <p class="mt-3 text-[13.5px] text-ink3 leading-[1.9]">{{p.catch}}</p>
+          <div class="mt-6 border-t hairline pt-5">
+            <p class="text-[12px] text-ink3">支援費用</p>
+            <p class="mt-1 text-[28px] md:text-[32px] font-bold text-brand tracking-tight">
+              {{p.price}}<span class="text-[13px] font-normal text-ink3 ml-1">（税別）</span>
+            </p>
+          </div>
+          <ul class="mt-6 space-y-2.5 text-[13px] text-ink2 flex-1">
+            <li v-for="f in p.features" :key="f" class="flex gap-2">
+              <span class="text-gold mt-0.5">—</span>
+              <span>{{f}}</span>
+            </li>
+          </ul>
+          <a href="#contact" class="btn-ghost mt-8 py-3 text-center text-[13px]">このプランで相談する</a>
+        </div>
+      </div>
+      <p class="mt-8 text-[12.5px] text-ink3 fade-up">
+        ※ 正式な料金は、要件確認後にお見積りいたします。
+      </p>
+    </div>
+  </section>`,
+  setup() {
+    const plans = [
+      {
+        label: 'STARTER', name: 'Starter', catch: 'まずはHubSpotを使える状態に', price: '¥300,000〜',
+        features: ['現状ヒアリング', 'HubSpot基本設計', 'CRM初期設定', '顧客・会社・取引設定', '基本プロパティ設計', 'ユーザー設定', '基本操作レクチャー', '導入後フォロー']
+      },
+      {
+        label: 'PROFESSIONAL', name: 'Professional', catch: '営業・マーケティングまで仕組み化', price: '¥600,000〜',
+        features: ['現状ヒアリング', 'CRM設計', '営業プロセス設計', 'パイプライン構築', 'フォーム設計 / Web連携', 'メール設計 / ワークフロー', 'レポート設計', 'マーケティング設計', 'AI活用設計', '運用支援']
+      },
+      {
+        label: 'ENTERPRISE', name: 'Enterprise', catch: '業務全体のDX・AI活用まで', price: '¥1,200,000〜',
+        features: ['全社業務ヒアリング', 'CRM設計', '営業DX / マーケティングDX', '高度な自動化', 'データ設計', '外部システム連携', 'AI活用設計', 'KPI設計', '定例ミーティング', '継続改善']
+      },
+    ];
+    return { plans };
+  }
+};
+
+/* ---------------- PricingTable ---------------- */
+const PricingTable = {
+  template: `
+  <section class="py-20 md:py-24 bg-paper">
+    <div class="max-w-[1200px] mx-auto px-5 md:px-8">
+      <p class="en-label fade-up">07 / COMPARISON</p>
+      <h2 class="section-title text-[22px] md:text-[32px] mt-4 fade-up">プラン比較</h2>
+      <div class="mt-10 md:mt-12 border hairline overflow-x-auto scroll-x fade-up">
+        <table class="w-full min-w-[640px] text-[13px]">
+          <thead>
+            <tr class="bg-white">
+              <th class="text-left font-medium text-ink3 px-5 py-4 w-[40%]">項目</th>
+              <th class="text-center font-bold text-brand px-4 py-4">Starter</th>
+              <th class="text-center font-bold text-brand px-4 py-4">Professional</th>
+              <th class="text-center font-bold text-brand px-4 py-4">Enterprise</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="(r, i) in rows" :key="i" class="border-t hairline" :class="{'bg-white': i%2===0}">
+              <td class="px-5 py-4 text-ink2">{{r.label}}</td>
+              <td class="px-4 py-4 text-center text-ink2">{{r.s}}</td>
+              <td class="px-4 py-4 text-center text-ink2">{{r.p}}</td>
+              <td class="px-4 py-4 text-center text-ink2">{{r.e}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="mt-6 text-[12px] text-ink3">○: 標準対応 ／ △: 一部対応 ／ ◎: 重点対応 ／ —: 含まず</p>
+    </div>
+  </section>`,
+  setup() {
+    const rows = [
+      { label: '現状ヒアリング', s: '○', p: '○', e: '◎' },
+      { label: 'CRM初期構築', s: '○', p: '○', e: '◎' },
+      { label: '営業プロセス設計', s: '△', p: '○', e: '◎' },
+      { label: 'フォーム・Web連携', s: '△', p: '○', e: '◎' },
+      { label: '自動化', s: '—', p: '○', e: '◎' },
+      { label: 'AI活用設計', s: '—', p: '△', e: '◎' },
+      { label: '外部システム連携', s: '—', p: '—', e: '◎' },
+      { label: 'KPI・レポート設計', s: '—', p: '○', e: '◎' },
+      { label: '継続伴走', s: '△', p: '○', e: '◎' },
+    ];
+    return { rows };
+  }
+};
+
+/* ---------------- Process ---------------- */
+const Process = {
+  template: `
+  <section id="process" class="py-20 md:py-28 bg-white">
+    <div class="max-w-[1200px] mx-auto px-5 md:px-8 grid md:grid-cols-12 gap-10">
+      <div class="md:col-span-4">
+        <p class="en-label fade-up">08 / PROCESS</p>
+        <h2 class="section-title text-[22px] md:text-[30px] mt-4 fade-up">
+          お問い合わせから<br class="md:hidden" />導入まで
+        </h2>
+        <p class="mt-5 text-[13.5px] text-ink3 leading-[2] fade-up">
+          まず現在の業務をお聞かせください。<br />
+          HubSpotを導入すべきかどうかという段階からご相談いただけます。
+        </p>
+      </div>
+      <ol class="md:col-span-8 relative pl-6 md:pl-8 border-l-2 timeline-line">
+        <li v-for="s in steps" :key="s.no" class="relative pb-8 md:pb-10 timeline-dot fade-up">
+          <p class="kv-num text-[12px]">{{s.no}}</p>
+          <p class="mt-1 text-[15px] md:text-[16px] font-medium text-brand">{{s.title}}</p>
+          <p v-if="s.desc" class="mt-1 text-[13px] text-ink3 leading-[1.9]">{{s.desc}}</p>
+        </li>
+      </ol>
+    </div>
+  </section>`,
+  setup() {
+    const steps = [
+      { no: '01', title: '無料相談', desc: '現在の業務や課題をお聞かせください。' },
+      { no: '02', title: '現状ヒアリング', desc: '営業・顧客管理・マーケティング業務を整理します。' },
+      { no: '03', title: 'HubSpot活用・補助金活用の方向性を整理', desc: '必要な機能や制度の対象要件を確認します。' },
+      { no: '04', title: '支援プラン・お見積り', desc: '範囲・期間・費用をご提示します。' },
+      { no: '05', title: 'HubSpot初期構築', desc: 'CRM・プロパティ・パイプライン等を設計・構築します。' },
+      { no: '06', title: '運用開始', desc: '操作レクチャーを経て、実際の業務で運用を開始します。' },
+      { no: '07', title: '改善・AI活用', desc: '運用状況を確認しながら、設定改善・AI活用を進めます。' },
+    ];
+    return { steps };
+  }
+};
+
+/* ---------------- Subsidy ---------------- */
+const Subsidy = {
+  template: `
+  <section class="py-20 md:py-28 bg-paper2">
+    <div class="max-w-[900px] mx-auto px-5 md:px-8">
+      <p class="en-label fade-up">09 / SUBSIDY</p>
+      <h2 class="section-title text-[22px] md:text-[30px] mt-4 fade-up">
+        デジタル化・AI導入補助金を活用した<br class="md:hidden" />
+        HubSpot導入をご検討の方へ
+      </h2>
+      <div class="mt-10 md:mt-14 space-y-5 text-[14px] md:text-[15px] text-ink2 leading-[2.1] fade-up">
+        <p>
+          補助金を活用できる可能性がある場合でも、制度の対象要件や申請時期、対象となるITツール・経費などについて確認が必要です。
+        </p>
+        <p>
+          「HubSpotを導入したいが、補助金を利用できるのかわからない」という段階でもご相談ください。現在の状況をお伺いしながら、対象となり得る制度や要件を一緒に整理します。
+        </p>
+      </div>
+      <div class="mt-10 fade-up">
+        <a href="#contact" class="btn-primary inline-block px-8 py-3.5 text-[14px]">補助金について相談する</a>
+      </div>
+      <p class="mt-8 text-[12px] text-ink3 leading-[1.9] fade-up">
+        ※ 補助金の利用可否や採択を保証するものではありません。最新の公募要領・制度内容については、公式情報をご確認ください。
+      </p>
+    </div>
+  </section>`,
+};
+
+/* ---------------- SupportAfter ---------------- */
+const SupportAfter = {
+  template: `
+  <section class="py-20 md:py-28 bg-white">
+    <div class="max-w-[1200px] mx-auto px-5 md:px-8 grid md:grid-cols-12 gap-10 md:gap-16">
+      <div class="md:col-span-5">
+        <p class="en-label fade-up">10 / AFTER IMPLEMENTATION</p>
+        <h2 class="section-title text-[22px] md:text-[30px] mt-4 fade-up">
+          導入して終わりではなく、<br class="md:hidden" />
+          一緒に改善していく。
+        </h2>
+        <div class="mt-8 text-[14px] md:text-[15px] text-ink2 leading-[2.1] space-y-4 fade-up">
+          <p>
+            実際に運用を始めると、「この項目は必要だった」「この作業は自動化できそう」といった新しい課題が見えてきます。
+          </p>
+          <p>
+            導入後の運用状況を確認しながら、HubSpotの設定や業務フローを改善していきます。
+          </p>
+        </div>
+      </div>
+      <div class="md:col-span-7 fade-up">
+        <ol class="border-t hairline">
+          <li v-for="(s, i) in steps" :key="i" class="border-b hairline py-5 flex items-baseline gap-6">
+            <span class="kv-num text-[13px]">0{{i+1}}</span>
+            <span class="text-[15px] text-brand font-medium">{{s}}</span>
+          </li>
+        </ol>
+      </div>
+    </div>
+  </section>`,
+  setup() {
+    return { steps: ['導入', '利用開始', '運用上の課題', '改善', '自動化', 'AI活用', 'データ活用'] };
+  }
+};
+
+/* ---------------- FAQ ---------------- */
+const FAQ = {
+  template: `
+  <section id="faq" class="py-20 md:py-28 bg-paper">
+    <div class="max-w-[900px] mx-auto px-5 md:px-8">
+      <p class="en-label fade-up">11 / FAQ</p>
+      <h2 class="section-title text-[22px] md:text-[32px] mt-4 fade-up">よくあるご質問</h2>
+      <div class="mt-10 md:mt-14 border-t hairline">
+        <details v-for="(q, i) in faqs" :key="i" class="border-b hairline group">
+          <summary class="py-5 md:py-6 flex items-start gap-5">
+            <span class="kv-num text-[13px] mt-1 shrink-0">Q.{{String(i+1).padStart(2,'0')}}</span>
+            <span class="text-[14px] md:text-[15px] text-brand font-medium leading-[1.8] flex-1">{{q.q}}</span>
+            <span class="faq-icon text-brand text-[18px] leading-none mt-1 shrink-0">＋</span>
+          </summary>
+          <div class="pb-6 pl-0 md:pl-9 flex gap-5">
+            <span class="hidden md:block kv-num text-[13px] mt-0.5">A.</span>
+            <p class="text-[13.5px] md:text-[14px] text-ink2 leading-[2.1] whitespace-pre-line">{{q.a}}</p>
+          </div>
+        </details>
+      </div>
+    </div>
+  </section>`,
+  setup() {
+    const faqs = [
+      { q: 'HubSpotを初めて使う会社でも対応できますか？', a: 'はい。現状の業務をヒアリングしたうえで、必要な機能や運用方法から一緒に整理します。' },
+      { q: 'すでにHubSpotを導入している場合も依頼できますか？', a: '可能です。既存設定の確認や運用上の課題を整理し、改善案をご提案します。' },
+      { q: 'HubSpotの料金とは別に支援費用が必要ですか？', a: 'はい。当社の導入支援・構築・伴走費用と、HubSpotのサービス利用料金は別となります。' },
+      { q: 'Starterから始めて後から上位プランに変更できますか？', a: '可能です。事業の成長や利用範囲に合わせて、必要な支援内容を見直します。' },
+      { q: '補助金を利用できるか相談できますか？', a: '可能です。利用可能性について状況を伺い、対象制度・要件等を確認しながらご案内します。' },
+      { q: '補助金申請の支援だけ依頼できますか？', a: '補助金制度によって支援可能な範囲が異なりますので、まずはご相談ください。' },
+      { q: 'AIについて詳しくなくても大丈夫ですか？', a: '問題ありません。現在の業務を確認し、AIを活用できるポイントから整理します。' },
+      { q: 'WebサイトがWordPressでも対応できますか？', a: 'はい。WordPressを含む既存Webサイトとの連携についても、要件を確認したうえで対応方法をご提案します。' },
+      { q: '既存のCRMからデータ移行できますか？', a: 'データ形式や件数、現在のシステムを確認したうえで、移行方法をご提案します。' },
+      { q: '導入後もサポートしてもらえますか？', a: 'はい。プランに応じて、導入後の運用支援・改善支援にも対応します。' },
+    ];
+    return { faqs };
+  }
+};
+
+/* ---------------- CTA ---------------- */
+const CTA = {
+  template: `
+  <section class="py-20 md:py-28 bg-brand text-white">
+    <div class="max-w-[900px] mx-auto px-5 md:px-8 text-center">
+      <p class="en-label fade-up" style="color:#B89B5E">CONTACT</p>
+      <h2 class="mt-5 text-[24px] md:text-[34px] font-bold leading-[1.5] fade-up">
+        まずは、<br class="md:hidden" />現在の業務をお聞かせください。
+      </h2>
+      <p class="mt-6 text-[14px] md:text-[15px] leading-[2.1] text-white/85 fade-up">
+        HubSpotを導入するべきかどうかも含めて、<br class="md:hidden" />
+        現在の業務や課題から一緒に整理します。
+      </p>
+      <div class="mt-10 fade-up">
+        <a href="#contact" class="inline-block bg-white text-brand px-10 py-4 text-[14px] font-bold hover:bg-paper transition">
+          無料相談・お問い合わせ
+        </a>
+      </div>
+      <p class="mt-6 text-[12px] text-white/70 fade-up">
+        HubSpot未導入・導入検討段階のご相談も歓迎しています。
+      </p>
+    </div>
+  </section>`
+};
+
+/* ---------------- ContactForm ---------------- */
+const ContactForm = {
+  template: `
+  <section id="contact" class="py-20 md:py-28 bg-white">
+    <div class="max-w-[820px] mx-auto px-5 md:px-8">
+      <p class="en-label fade-up">12 / CONTACT</p>
+      <h2 class="section-title text-[22px] md:text-[32px] mt-4 fade-up">お問い合わせ</h2>
+      <p class="mt-5 text-[14px] text-ink3 leading-[2] fade-up">
+        サービス内容・料金・HubSpot導入・補助金活用など、<br class="md:hidden" />
+       お気軽にお問い合わせください。
+      </p>
+
+      <div v-if="sent" class="mt-12 border hairline p-8 md:p-10 bg-paper fade-up">
+        <p class="en-label">THANK YOU</p>
+        <p class="mt-4 text-[17px] md:text-[19px] font-bold text-brand">お問い合わせありがとうございます。</p>
+        <p class="mt-3 text-[14px] text-ink2 leading-[2]">
+          内容を確認のうえ、担当者よりご連絡いたします。<br />
+          しばらくお待ちくださいませ。
+        </p>
+      </div>
+
+      <form v-else @submit.prevent="submit" class="mt-10 md:mt-14 space-y-7" novalidate>
+        <div class="grid md:grid-cols-2 gap-6">
+          <field label="会社名" required v-model="form.company" :error="errors.company" />
+          <field label="お名前" required v-model="form.name" :error="errors.name" />
+        </div>
+        <div class="grid md:grid-cols-2 gap-6">
+          <field label="メールアドレス" type="email" required v-model="form.email" :error="errors.email" />
+          <field label="電話番号" type="tel" v-model="form.tel" :error="errors.tel" />
+        </div>
+
+        <select-field label="現在のHubSpot利用状況" v-model="form.status" :options="statusOpts" />
+        <select-field label="検討しているプラン" v-model="form.plan" :options="planOpts" />
+        <select-field label="補助金の利用" v-model="form.subsidy" :options="subsidyOpts" />
+
+        <div>
+          <label class="block text-[13px] font-bold text-brand mb-2">
+            ご相談内容 <span class="text-gold ml-1 text-[11px]">*必須</span>
+          </label>
+          <textarea v-model="form.message" rows="6" class="input-field w-full px-4 py-3 text-[14px]" placeholder="現在の業務状況やご質問などをお書きください"></textarea>
+          <p v-if="errors.message" class="mt-2 text-[12px] text-red-700">{{errors.message}}</p>
+        </div>
+
+        <label class="flex items-start gap-3 text-[13px] text-ink2 cursor-pointer">
+          <input type="checkbox" v-model="form.agree" class="mt-1 accent-brand" />
+          <span>個人情報保護方針に同意します。</span>
+        </label>
+        <p v-if="errors.agree" class="text-[12px] text-red-700 -mt-4">{{errors.agree}}</p>
+
+        <div class="pt-4">
+          <button type="submit" :disabled="sending" class="btn-primary w-full md:w-auto px-10 py-4 text-[14px] disabled:opacity-60">
+            {{sending ? '送信中...' : 'お問い合わせを送信する'}}
+          </button>
+        </div>
+      </form>
+    </div>
+  </section>`,
+  components: {
+    'field': {
+      props: ['label','type','required','modelValue','error'],
+      emits: ['update:modelValue'],
+      template: `
+        <div>
+          <label class="block text-[13px] font-bold text-brand mb-2">
+            {{label}}
+            <span v-if="required" class="text-gold ml-1 text-[11px]">*必須</span>
+          </label>
+          <input :type="type||'text'" :value="modelValue" @input="$emit('update:modelValue', $event.target.value)" class="input-field w-full px-4 py-3 text-[14px]" />
+          <p v-if="error" class="mt-2 text-[12px] text-red-700">{{error}}</p>
+        </div>`
+    },
+    'select-field': {
+      props: ['label','modelValue','options'],
+      emits: ['update:modelValue'],
+      template: `
+        <div>
+          <label class="block text-[13px] font-bold text-brand mb-2">{{label}}</label>
+          <select :value="modelValue" @change="$emit('update:modelValue', $event.target.value)" class="input-field w-full px-4 py-3 text-[14px] bg-white">
+            <option value="">選択してください</option>
+            <option v-for="o in options" :key="o" :value="o">{{o}}</option>
+          </select>
+        </div>`
+    }
+  },
+  setup() {
+    const form = reactive({
+      company: '', name: '', email: '', tel: '',
+      status: '', plan: '', subsidy: '',
+      message: '', agree: false,
+    });
+    const errors = reactive({});
+    const sending = ref(false);
+    const sent = ref(false);
+    const statusOpts = ['未導入','導入検討中','すでに利用中','他社からの乗り換え'];
+    const planOpts = ['Starter','Professional','Enterprise','まだ決まっていない'];
+    const subsidyOpts = ['検討している','相談したい','利用予定なし','わからない'];
+
+    const validate = () => {
+      Object.keys(errors).forEach(k => delete errors[k]);
+      if (!form.company.trim()) errors.company = '会社名を入力してください。';
+      if (!form.name.trim()) errors.name = 'お名前を入力してください。';
+      if (!form.email.trim()) errors.email = 'メールアドレスを入力してください。';
+      else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) errors.email = 'メールアドレスの形式が正しくありません。';
+      if (!form.message.trim()) errors.message = 'ご相談内容を入力してください。';
+      if (!form.agree) errors.agree = '個人情報保護方針に同意してください。';
+      return Object.keys(errors).length === 0;
+    };
+    const submit = async () => {
+      if (!validate()) return;
+      sending.value = true;
+      await new Promise(r => setTimeout(r, 1200));
+      sending.value = false;
+      sent.value = true;
+      window.scrollTo({ top: document.getElementById('contact').offsetTop - 80, behavior: 'smooth' });
+    };
+    return { form, errors, sending, sent, submit, statusOpts, planOpts, subsidyOpts };
+  }
+};
+
+/* ---------------- Footer ---------------- */
+const Footer = {
+  template: `
+  <footer class="bg-brand text-white/80">
+    <div class="max-w-[1200px] mx-auto px-5 md:px-8 py-12 md:py-16 grid md:grid-cols-12 gap-8">
+      <div class="md:col-span-5">
+        <p class="text-white font-bold text-[15px]">HubSpot導入支援</p>
+        <p class="text-[11px] tracking-[0.22em] text-gold mt-1 font-bold">IMPLEMENTATION SUPPORT</p>
+        <p class="mt-5 text-[13px] leading-[2] max-w-sm">
+          中小企業・小規模事業者のHubSpot導入・CRM設計・営業DX・AI活用までを伴走支援。
+        </p>
+      </div>
+      <nav class="md:col-span-4 md:col-start-8 grid grid-cols-2 gap-y-3 text-[13px]">
+        <a href="#support" class="hover:text-white">サービス内容</a>
+        <a href="#pricing" class="hover:text-white">料金プラン</a>
+        <a href="#process" class="hover:text-white">導入の流れ</a>
+        <a href="#faq" class="hover:text-white">よくある質問</a>
+        <a href="#contact" class="hover:text-white">お問い合わせ</a>
+        <a href="#" class="hover:text-white">プライバシーポリシー</a>
+        <a href="#" class="hover:text-white">会社情報</a>
+      </nav>
+    </div>
+    <div class="border-t border-white/10">
+      <div class="max-w-[1200px] mx-auto px-5 md:px-8 py-5 flex flex-col md:flex-row items-center justify-between gap-2 text-[11px] text-white/60">
+        <span>© HubSpot導入支援</span>
+        <span>HubSpotはHubSpot, Inc.の登録商標です。</span>
+      </div>
+    </div>
+  </footer>`
+};
+
+/* ---------------- App ---------------- */
+const App = {
+  components: { Header, Hero, Problems, HubspotFlow, HubspotAiSubsidy, Features, SupportContents, Pricing, PricingTable, Process, Subsidy, SupportAfter, FAQ, CTA, ContactForm, Footer },
+  template: `
+    <Header />
+    <main>
+      <Hero />
+      <Problems />
+      <HubspotFlow />
+      <HubspotAiSubsidy />
+      <Features />
+      <SupportContents />
+      <Pricing />
+      <PricingTable />
+      <Process />
+      <Subsidy />
+      <SupportAfter />
+      <FAQ />
+      <CTA />
+      <ContactForm />
+    </main>
+    <Footer />
+  `,
+  setup() {
+    onMounted(() => {
+      const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const els = document.querySelectorAll('.fade-up');
+      if (reduced) {
+        els.forEach(el => el.classList.add('is-visible'));
+        return;
+      }
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((entry, idx) => {
+          if (entry.isIntersecting) {
+            const el = entry.target;
+            const delay = Math.min(idx * 40, 240);
+            setTimeout(() => {
+              if (typeof anime !== 'undefined') {
+                anime({
+                  targets: el,
+                  opacity: [0, 1],
+                  translateY: [18, 0],
+                  duration: 700,
+                  easing: 'easeOutQuad',
+                });
+              } else {
+                el.classList.add('is-visible');
+              }
+            }, delay);
+            io.unobserve(el);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+      els.forEach(el => io.observe(el));
+    });
+  }
+};
+
+createApp(App).mount('#app');
+</script>
+</body>
+</html>

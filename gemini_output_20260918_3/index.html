@@ -1,0 +1,1213 @@
+<!DOCTYPE html>
+<html lang="ja" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HubSpot導入支援｜CRM・営業DX・AI活用まで伴走</title>
+    <meta name="description" content="HubSpotの導入・初期構築からCRM設計、営業DX、マーケティング、自動化、AI活用、運用定着まで伴走。デジタル化・AI導入補助金の活用についてもご相談いただけます。">
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#213545',
+                        accent: '#B89B5E',
+                        textMain: '#333333',
+                        textSub: '#555555',
+                        bgGray: '#F7F8F7',
+                        bgGrayDark: '#F2F4F3',
+                        borderGray: '#E5E7EB'
+                    },
+                    fontFamily: {
+                        sans: ['"Noto Sans JP"', 'sans-serif'],
+                        en: ['"Inter"', 'sans-serif'],
+                    },
+                    maxWidth: {
+                        'content': '1200px',
+                        'read': '800px',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Vue 3 -->
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+    <!-- anime.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js"></script>
+
+    <style>
+        body {
+            color: #333333;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+        
+        .section-label {
+            font-family: 'Inter', sans-serif;
+            letter-spacing: 0.1em;
+            font-size: 0.875rem;
+            color: #B89B5E;
+            font-weight: 500;
+            display: block;
+            margin-bottom: 1.5rem;
+        }
+
+        .fade-up-element {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        [v-cloak] { display: none; }
+        
+        /* Custom Scrollbar for Plan Table */
+        .custom-scrollbar::-webkit-scrollbar {
+            height: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #F7F8F7; 
+            border-radius: 0;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #D1D5DB; 
+            border-radius: 0;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #9CA3AF; 
+        }
+
+        /* Focus styles for accessibility */
+        *:focus-visible {
+            outline: 2px solid #213545;
+            outline-offset: 2px;
+        }
+
+        /* Hero Canvas Overlay */
+        #hero-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body class="bg-white selection:bg-primary selection:text-white">
+
+<div id="app" v-cloak>
+
+    <header class="fixed top-0 w-full bg-white/95 backdrop-blur-sm z-50 border-b border-gray-200 transition-all duration-300" :class="{ 'shadow-sm': isScrolled }">
+        <div class="max-w-content mx-auto px-5 lg:px-8 h-20 flex items-center justify-between">
+            <a href="#" class="flex items-center text-primary font-en font-semibold tracking-wider text-sm lg:text-base">
+                HubSpot IMPLEMENTATION
+            </a>
+
+            <!-- Desktop Nav -->
+            <nav class="hidden lg:flex items-center space-x-8 text-sm font-medium">
+                <a href="#solution" class="text-textMain hover:text-primary transition-colors">サービス内容</a>
+                <a href="#plan" class="text-textMain hover:text-primary transition-colors">料金</a>
+                <a href="#process" class="text-textMain hover:text-primary transition-colors">導入の流れ</a>
+                <a href="#faq" class="text-textMain hover:text-primary transition-colors">FAQ</a>
+                <a href="#contact" class="bg-primary text-white px-6 py-3 hover:bg-opacity-90 transition-all font-semibold">無料相談はこちら</a>
+            </nav>
+
+            <!-- Mobile Menu Button -->
+            <button @click="toggleMobileMenu" class="lg:hidden p-2 text-primary focus:outline-none" aria-label="メニューを開く">
+                <svg v-if="!isMobileMenuOpen" class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                <svg v-else class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+
+        <!-- Mobile Nav -->
+        <div v-show="isMobileMenuOpen" class="lg:hidden absolute top-20 left-0 w-full bg-white border-b border-gray-200 shadow-lg">
+            <nav class="flex flex-col px-5 py-4 space-y-4 text-sm font-medium">
+                <a href="#solution" @click="toggleMobileMenu" class="block text-textMain py-2 border-b border-gray-100">サービス内容</a>
+                <a href="#plan" @click="toggleMobileMenu" class="block text-textMain py-2 border-b border-gray-100">料金</a>
+                <a href="#process" @click="toggleMobileMenu" class="block text-textMain py-2 border-b border-gray-100">導入の流れ</a>
+                <a href="#faq" @click="toggleMobileMenu" class="block text-textMain py-2 border-b border-gray-100">FAQ</a>
+                <a href="#contact" @click="toggleMobileMenu" class="block bg-primary text-white text-center px-6 py-4 mt-2 font-semibold">無料相談はこちら</a>
+            </nav>
+        </div>
+    </header>
+
+    <section class="relative pt-32 pb-20 md:pt-40 md:pb-32 bg-bgGray overflow-hidden min-h-[90vh] flex items-center">
+        <!-- Canvas Background -->
+        <canvas id="hero-canvas"></canvas>
+        
+        <div class="max-w-content mx-auto px-5 lg:px-8 relative z-10 w-full">
+            <div class="flex flex-col lg:flex-row items-center gap-12 lg:gap-20">
+                <!-- Text Content -->
+                <div class="w-full lg:w-1/2">
+                    <p class="section-label fade-up-element" data-delay="100">HUBSPOT IMPLEMENTATION SUPPORT</p>
+                    <h1 class="text-4xl md:text-5xl lg:text-6xl font-medium text-primary leading-tight tracking-tight mb-8 fade-up-element" data-delay="200">
+                        HubSpotを、<br>
+                        <span class="inline-block mt-2">導入して終わりにしない。</span>
+                    </h1>
+                    <p class="text-base md:text-lg text-textMain leading-relaxed mb-6 fade-up-element" data-delay="300">
+                        CRM・営業・マーケティング・AI活用まで。<br>
+                        御社の業務に合わせたHubSpot導入を、<br class="hidden md:block">
+                        設計から運用定着まで伴走します。
+                    </p>
+                    <p class="text-sm md:text-base text-textSub mb-10 fade-up-element" data-delay="400">
+                        デジタル化・AI導入補助金の活用についてもご相談いただけます。
+                    </p>
+                    
+                    <div class="flex flex-col sm:flex-row gap-4 fade-up-element" data-delay="500">
+                        <a href="#contact" class="inline-flex justify-center items-center bg-primary text-white font-medium px-8 py-4 hover:bg-opacity-90 transition-colors">
+                            無料相談・導入相談はこちら
+                        </a>
+                        <a href="#solution" class="inline-flex justify-center items-center border border-primary text-primary font-medium px-8 py-4 hover:bg-bgGrayDark transition-colors">
+                            サービス内容を見る
+                        </a>
+                    </div>
+                    
+                    <!-- Tags -->
+                    <div class="mt-12 pt-6 border-t border-gray-300 flex flex-wrap gap-x-4 gap-y-2 text-sm text-textSub fade-up-element" data-delay="600">
+                        <span>HubSpot導入</span>
+                        <span class="text-gray-300">/</span>
+                        <span>CRM構築</span>
+                        <span class="text-gray-300">/</span>
+                        <span>営業DX</span>
+                        <span class="text-gray-300">/</span>
+                        <span>マーケティング自動化</span>
+                        <span class="text-gray-300">/</span>
+                        <span>AI活用</span>
+                        <span class="text-gray-300">/</span>
+                        <span>補助金活用相談</span>
+                    </div>
+                </div>
+
+                <!-- Visual Content -->
+                <div class="w-full lg:w-1/2 fade-up-element" data-delay="300">
+                    <div class="relative w-full aspect-[4/3] bg-gray-200 overflow-hidden">
+                        <!-- High quality business placeholder image -->
+                        <img src="https://images.unsplash.com/photo-1552664730-d307ca884978?ixlib=rb-4.0.3&auto=format&fit=crop&w=1200&q=80" alt="オフィスでのミーティング風景" class="w-full h-full object-cover opacity-90 mix-blend-multiply grayscale-[20%]">
+                        <!-- Design Overlay for BtoB feel -->
+                        <div class="absolute inset-0 border border-primary/10 m-4"></div>
+                        <div class="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-primary/20 to-transparent"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 md:py-32 bg-white">
+        <div class="max-w-content mx-auto px-5 lg:px-8">
+            <div class="flex flex-col lg:flex-row gap-12 lg:gap-24">
+                <div class="w-full lg:w-5/12">
+                    <div class="sticky top-32">
+                        <span class="section-label fade-up-element">01 / PROBLEM</span>
+                        <h2 class="text-3xl md:text-4xl font-medium text-primary leading-tight mb-8 fade-up-element">
+                            HubSpotを検討しているものの、<br>
+                            こんな課題はありませんか？
+                        </h2>
+                    </div>
+                </div>
+                
+                <div class="w-full lg:w-7/12">
+                    <ul class="border-t border-borderGray fade-up-element">
+                        <li class="py-6 border-b border-borderGray flex items-start gap-4">
+                            <span class="text-accent mt-1">―</span>
+                            <p class="text-lg text-textMain leading-relaxed">顧客情報がExcelやスプレッドシートに分散している</p>
+                        </li>
+                        <li class="py-6 border-b border-borderGray flex items-start gap-4">
+                            <span class="text-accent mt-1">―</span>
+                            <p class="text-lg text-textMain leading-relaxed">営業担当者ごとに顧客管理の方法が違う</p>
+                        </li>
+                        <li class="py-6 border-b border-borderGray flex items-start gap-4">
+                            <span class="text-accent mt-1">―</span>
+                            <p class="text-lg text-textMain leading-relaxed">問い合わせ後のフォローが属人的になっている</p>
+                        </li>
+                        <li class="py-6 border-b border-borderGray flex items-start gap-4">
+                            <span class="text-accent mt-1">―</span>
+                            <p class="text-lg text-textMain leading-relaxed">Webから問い合わせは来るが、その後の営業管理ができていない</p>
+                        </li>
+                        <li class="py-6 border-b border-borderGray flex items-start gap-4">
+                            <span class="text-accent mt-1">―</span>
+                            <p class="text-lg text-textMain leading-relaxed">CRMやMAを導入したいが、何をどう設計すればいいかわからない</p>
+                        </li>
+                        <li class="py-6 border-b border-borderGray flex items-start gap-4">
+                            <span class="text-accent mt-1">―</span>
+                            <p class="text-lg text-textMain leading-relaxed">HubSpotを導入したものの、十分に活用できていない</p>
+                        </li>
+                        <li class="py-6 border-b border-borderGray flex items-start gap-4">
+                            <span class="text-accent mt-1">―</span>
+                            <p class="text-lg text-textMain leading-relaxed">AIを業務に取り入れたいが、具体的な使い道がわからない</p>
+                        </li>
+                        <li class="py-6 border-b border-borderGray flex items-start gap-4">
+                            <span class="text-accent mt-1">―</span>
+                            <p class="text-lg text-textMain leading-relaxed">補助金を利用してデジタル化を進めたい</p>
+                        </li>
+                    </ul>
+
+                    <div class="mt-16 p-8 bg-bgGray border-l-4 border-primary fade-up-element">
+                        <p class="text-xl md:text-2xl font-medium text-primary leading-relaxed">
+                            ツールを導入することが目的ではありません。<br>
+                            業務が変わるところまで、一緒に設計します。
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="solution" class="py-24 md:py-32 bg-bgGray">
+        <div class="max-w-content mx-auto px-5 lg:px-8">
+            <span class="section-label fade-up-element">02 / SOLUTION</span>
+            <h2 class="text-3xl md:text-4xl font-medium text-primary leading-tight mb-16 fade-up-element">
+                問い合わせから受注までを、<br>
+                ひとつの流れに。
+            </h2>
+
+            <!-- Flow Representation -->
+            <div class="relative mt-12 fade-up-element">
+                <!-- Desktop Horizontal Line -->
+                <div class="hidden lg:block absolute top-1/2 left-0 w-full h-[1px] bg-borderGray -translate-y-1/2 z-0"></div>
+                
+                <div class="flex flex-col lg:flex-row justify-between relative z-10 gap-8 lg:gap-0">
+                    <div class="flex flex-col items-start lg:items-center w-full lg:w-1/6 bg-bgGray lg:px-2">
+                        <span class="font-en text-xs text-textSub mb-2 block">01</span>
+                        <div class="text-base font-medium text-primary border border-primary/20 bg-white px-4 py-3 w-full lg:w-auto text-center">問い合わせ</div>
+                    </div>
+                    <!-- Mobile Arrow -->
+                    <div class="lg:hidden text-borderGray text-center">↓</div>
+                    
+                    <div class="flex flex-col items-start lg:items-center w-full lg:w-1/6 bg-bgGray lg:px-2">
+                        <span class="font-en text-xs text-textSub mb-2 block">02</span>
+                        <div class="text-base font-medium text-primary border border-primary/20 bg-white px-4 py-3 w-full lg:w-auto text-center">顧客情報を自動登録</div>
+                    </div>
+                    <div class="lg:hidden text-borderGray text-center">↓</div>
+
+                    <div class="flex flex-col items-start lg:items-center w-full lg:w-1/6 bg-bgGray lg:px-2">
+                        <span class="font-en text-xs text-textSub mb-2 block">03</span>
+                        <div class="text-base font-medium text-primary border border-primary/20 bg-white px-4 py-3 w-full lg:w-auto text-center">営業担当へ通知</div>
+                    </div>
+                    <div class="lg:hidden text-borderGray text-center">↓</div>
+
+                    <div class="flex flex-col items-start lg:items-center w-full lg:w-1/6 bg-bgGray lg:px-2">
+                        <span class="font-en text-xs text-textSub mb-2 block">04</span>
+                        <div class="text-base font-medium text-primary border border-primary/20 bg-white px-4 py-3 w-full lg:w-auto text-center">商談管理</div>
+                    </div>
+                    <div class="lg:hidden text-borderGray text-center">↓</div>
+
+                    <div class="flex flex-col items-start lg:items-center w-full lg:w-1/6 bg-bgGray lg:px-2">
+                        <span class="font-en text-xs text-textSub mb-2 block">05</span>
+                        <div class="text-base font-medium text-primary border border-primary/20 bg-white px-4 py-3 w-full lg:w-auto text-center">成約・フォロー</div>
+                    </div>
+                    <div class="lg:hidden text-borderGray text-center">↓</div>
+
+                    <div class="flex flex-col items-start lg:items-center w-full lg:w-1/6 bg-bgGray lg:px-2">
+                        <span class="font-en text-xs text-textSub mb-2 block">06</span>
+                        <div class="text-base font-medium text-primary border border-primary/20 bg-white px-4 py-3 w-full lg:w-auto text-center">AI・データ分析</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-20 max-w-read mx-auto text-center fade-up-element">
+                <p class="text-lg md:text-xl text-textMain leading-loose">
+                    HubSpotをCRMの中心に置くことで、<br>
+                    顧客情報、営業活動、マーケティング施策を<br>
+                    一つの流れとして管理できる環境を設計します。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 md:py-32 bg-bgGrayDark relative overflow-hidden">
+        <div class="max-w-content mx-auto px-5 lg:px-8 relative z-10">
+            <div class="max-w-read mb-16 fade-up-element">
+                <span class="section-label">03 / CONCEPT</span>
+                <h2 class="text-3xl md:text-4xl font-medium text-primary leading-tight mb-6">
+                    HubSpotだけではなく、<br>
+                    これからの業務まで設計する。
+                </h2>
+                <p class="text-base text-textSub leading-relaxed">
+                    補助金ありきでツールを選ぶのではなく、まず自社に必要な業務改善を整理。<br>
+                    そのうえで利用可能な制度があれば活用を検討します。
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12 fade-up-element">
+                <!-- Box 1 -->
+                <div class="border-t-2 border-primary pt-6">
+                    <h3 class="text-xl font-en font-medium text-primary mb-4 tracking-wider">HUBSPOT</h3>
+                    <p class="text-base text-textMain leading-relaxed">
+                        顧客・営業・マーケティングを一元管理。点在していたデータを一つのプラットフォームに集約し、組織全体の情報共有をスムーズにします。
+                    </p>
+                </div>
+                <!-- Box 2 -->
+                <div class="border-t-2 border-primary pt-6">
+                    <h3 class="text-xl font-en font-medium text-primary mb-4 tracking-wider">AI</h3>
+                    <p class="text-base text-textMain leading-relaxed">
+                        問い合わせ対応、情報整理、コンテンツ作成など、AIを活用できる業務を整理。最新のテクノロジーを実務に落とし込みます。
+                    </p>
+                </div>
+                <!-- Box 3 -->
+                <div class="border-t-2 border-primary pt-6">
+                    <h3 class="text-xl font-en font-medium text-primary mb-4 tracking-wider">SUBSIDY</h3>
+                    <p class="text-base text-textMain leading-relaxed">
+                        対象となる制度や要件を確認しながら、導入計画を検討。無理のない投資で最大の効果を得られるよう、選択肢の一つとして整理します。
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Abstract Decoration (Canvas alternative for simple geometric) -->
+        <div class="absolute -right-20 -bottom-20 opacity-5 pointer-events-none">
+            <svg width="400" height="400" viewBox="0 0 400 400" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="200" cy="200" r="199" stroke="#213545" stroke-width="2"/>
+                <circle cx="200" cy="200" r="140" stroke="#213545" stroke-width="2"/>
+                <line x1="200" y1="0" x2="200" y2="400" stroke="#213545" stroke-width="2"/>
+                <line x1="0" y1="200" x2="400" y2="200" stroke="#213545" stroke-width="2"/>
+            </svg>
+        </div>
+    </section>
+
+    <section class="py-24 md:py-32 bg-white">
+        <div class="max-w-content mx-auto px-5 lg:px-8">
+            <span class="section-label fade-up-element">04 / FEATURES</span>
+            <h2 class="text-3xl md:text-4xl font-medium text-primary leading-tight mb-16 fade-up-element">
+                導入だけではなく、<br>
+                使い続けられるところまで。
+            </h2>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-x-16 gap-y-12 fade-up-element">
+                <div class="border-b border-borderGray pb-8">
+                    <span class="font-en text-xl text-accent mb-2 block">01</span>
+                    <h3 class="text-xl font-medium text-primary mb-4">現状の業務から設計</h3>
+                    <p class="text-base text-textMain leading-relaxed">
+                        HubSpotの機能に業務を合わせるのではなく、現在の営業・顧客管理・マーケティング業務を整理したうえで、最適なCRM構造を設計します。
+                    </p>
+                </div>
+                <div class="border-b border-borderGray pb-8">
+                    <span class="font-en text-xl text-accent mb-2 block">02</span>
+                    <h3 class="text-xl font-medium text-primary mb-4">初期構築まで対応</h3>
+                    <p class="text-base text-textMain leading-relaxed">
+                        CRMのプロパティ設定、営業パイプライン、フォーム連携、ワークフローなど、実際に実務で使える状態になるまで初期構築を実施します。
+                    </p>
+                </div>
+                <div class="border-b border-borderGray pb-8">
+                    <span class="font-en text-xl text-accent mb-2 block">03</span>
+                    <h3 class="text-xl font-medium text-primary mb-4">AI活用まで視野に入れる</h3>
+                    <p class="text-base text-textMain leading-relaxed">
+                        HubSpotに蓄積されるデータを活用し、AIによる業務効率化・情報活用を検討。次世代の営業・マーケティング環境を構築します。
+                    </p>
+                </div>
+                <div class="border-b border-borderGray pb-8">
+                    <span class="font-en text-xl text-accent mb-2 block">04</span>
+                    <h3 class="text-xl font-medium text-primary mb-4">導入後も伴走</h3>
+                    <p class="text-base text-textMain leading-relaxed">
+                        納品して終了ではなく、運用開始後の改善・活用まで支援。現場のフィードバックをもとに、設定の微調整や新しい機能の活用をサポートします。
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 md:py-32 bg-bgGray">
+        <div class="max-w-content mx-auto px-5 lg:px-8">
+            <span class="section-label fade-up-element">05 / SUPPORT</span>
+            <h2 class="text-3xl md:text-4xl font-medium text-primary leading-tight mb-16 fade-up-element">
+                HubSpot導入を、<br>
+                8つのステップで支援します。
+            </h2>
+
+            <div class="border-t border-primary fade-up-element">
+                <div class="py-8 border-b border-borderGray flex flex-col md:flex-row md:items-center gap-4 md:gap-12">
+                    <div class="w-full md:w-1/3 flex items-center gap-4">
+                        <span class="font-en text-textSub w-6">01</span>
+                        <h3 class="text-lg font-medium text-primary">現状ヒアリング</h3>
+                    </div>
+                    <div class="w-full md:w-2/3">
+                        <p class="text-textMain">現在の営業・顧客管理・マーケティング業務を整理し、課題を明確にします。</p>
+                    </div>
+                </div>
+
+                <div class="py-8 border-b border-borderGray flex flex-col md:flex-row md:items-center gap-4 md:gap-12">
+                    <div class="w-full md:w-1/3 flex items-center gap-4">
+                        <span class="font-en text-textSub w-6">02</span>
+                        <h3 class="text-lg font-medium text-primary">業務設計</h3>
+                    </div>
+                    <div class="w-full md:w-2/3">
+                        <p class="text-textMain">HubSpotで管理する情報項目や、新しい業務フローを設計します。</p>
+                    </div>
+                </div>
+
+                <div class="py-8 border-b border-borderGray flex flex-col md:flex-row md:items-center gap-4 md:gap-12">
+                    <div class="w-full md:w-1/3 flex items-center gap-4">
+                        <span class="font-en text-textSub w-6">03</span>
+                        <h3 class="text-lg font-medium text-primary">HubSpot初期設定</h3>
+                    </div>
+                    <div class="w-full md:w-2/3">
+                        <p class="text-textMain">CRM基盤、ユーザーアカウント、権限、カスタムプロパティ等の基本設定を行います。</p>
+                    </div>
+                </div>
+
+                <div class="py-8 border-b border-borderGray flex flex-col md:flex-row md:items-center gap-4 md:gap-12">
+                    <div class="w-full md:w-1/3 flex items-center gap-4">
+                        <span class="font-en text-textSub w-6">04</span>
+                        <h3 class="text-lg font-medium text-primary">営業・案件管理</h3>
+                    </div>
+                    <div class="w-full md:w-2/3">
+                        <p class="text-textMain">商談ステージに応じたパイプラインや営業プロセスを構築します。</p>
+                    </div>
+                </div>
+
+                <div class="py-8 border-b border-borderGray flex flex-col md:flex-row md:items-center gap-4 md:gap-12">
+                    <div class="w-full md:w-1/3 flex items-center gap-4">
+                        <span class="font-en text-textSub w-6">05</span>
+                        <h3 class="text-lg font-medium text-primary">Web・フォーム連携</h3>
+                    </div>
+                    <div class="w-full md:w-2/3">
+                        <p class="text-textMain">自社Webサイトからの問い合わせ情報を、自動的にCRMへ接続・蓄積させます。</p>
+                    </div>
+                </div>
+
+                <div class="py-8 border-b border-borderGray flex flex-col md:flex-row md:items-center gap-4 md:gap-12">
+                    <div class="w-full md:w-1/3 flex items-center gap-4">
+                        <span class="font-en text-textSub w-6">06</span>
+                        <h3 class="text-lg font-medium text-primary">自動化</h3>
+                    </div>
+                    <div class="w-full md:w-2/3">
+                        <p class="text-textMain">リードに対するフォローアップメール、社内通知、タスク生成などを自動化します。</p>
+                    </div>
+                </div>
+
+                <div class="py-8 border-b border-borderGray flex flex-col md:flex-row md:items-center gap-4 md:gap-12">
+                    <div class="w-full md:w-1/3 flex items-center gap-4">
+                        <span class="font-en text-textSub w-6">07</span>
+                        <h3 class="text-lg font-medium text-primary">AI活用</h3>
+                    </div>
+                    <div class="w-full md:w-2/3">
+                        <p class="text-textMain">データ分析やメール文面作成など、AIを活用できる業務を整理し実装を支援します。</p>
+                    </div>
+                </div>
+
+                <div class="py-8 border-b border-borderGray flex flex-col md:flex-row md:items-center gap-4 md:gap-12">
+                    <div class="w-full md:w-1/3 flex items-center gap-4">
+                        <span class="font-en text-textSub w-6">08</span>
+                        <h3 class="text-lg font-medium text-primary">運用支援</h3>
+                    </div>
+                    <div class="w-full md:w-2/3">
+                        <p class="text-textMain">導入後の定例ミーティング等を通じ、利用定着・改善・高度な活用を継続支援します。</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="plan" class="py-24 md:py-32 bg-white">
+        <div class="max-w-content mx-auto px-5 lg:px-8">
+            <span class="section-label fade-up-element">06 / PLAN</span>
+            <h2 class="text-3xl md:text-4xl font-medium text-primary leading-tight mb-6 fade-up-element">
+                支援内容に合わせて、<br>
+                3つのプランをご用意しています。
+            </h2>
+            <p class="text-sm text-textSub mb-16 fade-up-element border-l-2 border-accent pl-4">
+                ※下記は「当社の導入支援・構築・伴走費用」です。<br>
+                HubSpotのサービス利用料金（ライセンス費）は別途HubSpot社へのお支払いとなります。
+            </p>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 fade-up-element">
+                <!-- Starter Plan -->
+                <div class="border border-borderGray bg-white p-8 hover:border-primary transition-colors flex flex-col">
+                    <h3 class="font-en text-lg font-semibold tracking-wider text-primary mb-2">STARTER</h3>
+                    <p class="text-sm text-textSub mb-6 h-10">まずはHubSpotを使える状態に</p>
+                    <div class="border-b border-borderGray pb-6 mb-6">
+                        <span class="text-sm text-textMain">導入支援費用</span>
+                        <p class="text-3xl font-en font-medium text-primary mt-1">¥300,000<span class="text-lg font-sans font-normal text-textSub">〜</span></p>
+                    </div>
+                    <ul class="text-sm text-textMain space-y-3 mb-8 flex-grow">
+                        <li class="flex items-start"><span class="text-primary mr-2">✓</span>現状ヒアリング</li>
+                        <li class="flex items-start"><span class="text-primary mr-2">✓</span>HubSpot基本設計</li>
+                        <li class="flex items-start"><span class="text-primary mr-2">✓</span>CRM初期設定</li>
+                        <li class="flex items-start"><span class="text-primary mr-2">✓</span>顧客・会社・取引設定</li>
+                        <li class="flex items-start"><span class="text-primary mr-2">✓</span>基本プロパティ設計</li>
+                        <li class="flex items-start"><span class="text-primary mr-2">✓</span>ユーザー設定</li>
+                        <li class="flex items-start"><span class="text-primary mr-2">✓</span>基本操作レクチャー</li>
+                        <li class="flex items-start"><span class="text-primary mr-2">✓</span>導入後フォロー</li>
+                    </ul>
+                </div>
+
+                <!-- Professional Plan -->
+                <div class="border border-borderGray bg-white p-8 hover:border-primary transition-colors flex flex-col relative">
+                    <!-- Accent Line top -->
+                    <div class="absolute top-0 left-0 w-full h-1 bg-primary"></div>
+                    <h3 class="font-en text-lg font-semibold tracking-wider text-primary mb-2">PROFESSIONAL</h3>
+                    <p class="text-sm text-textSub mb-6 h-10">営業・マーケティングまで仕組み化</p>
+                    <div class="border-b border-borderGray pb-6 mb-6">
+                        <span class="text-sm text-textMain">導入支援費用</span>
+                        <p class="text-3xl font-en font-medium text-primary mt-1">¥600,000<span class="text-lg font-sans font-normal text-textSub">〜</span></p>
+                    </div>
+                    <ul class="text-sm text-textMain space-y-3 mb-8 flex-grow">
+                        <li class="flex items-start"><span class="text-primary mr-2">✓</span>現状ヒアリング</li>
+                        <li class="flex items-start"><span class="text-primary mr-2">✓</span>CRM設計</li>
+                        <li class="flex items-start"><span class="text-primary mr-2">✓</span>営業プロセス設計・パイプライン</li>
+                        <li class="flex items-start"><span class="text-primary mr-2">✓</span>フォーム設計・Web連携</li>
+                        <li class="flex items-start"><span class="text-primary mr-2">✓</span>メール設計・ワークフロー</li>
+                        <li class="flex items-start"><span class="text-primary mr-2">✓</span>レポート構築</li>
+                        <li class="flex items-start"><span class="text-primary mr-2">✓</span>マーケティング設計</li>
+                        <li class="flex items-start"><span class="text-primary mr-2">✓</span>AI活用設計</li>
+                        <li class="flex items-start"><span class="text-primary mr-2">✓</span>運用支援</li>
+                    </ul>
+                </div>
+
+                <!-- Enterprise Plan -->
+                <div class="border border-borderGray bg-white p-8 hover:border-primary transition-colors flex flex-col">
+                    <h3 class="font-en text-lg font-semibold tracking-wider text-primary mb-2">ENTERPRISE</h3>
+                    <p class="text-sm text-textSub mb-6 h-10">業務全体のDX・AI活用まで</p>
+                    <div class="border-b border-borderGray pb-6 mb-6">
+                        <span class="text-sm text-textMain">導入支援費用</span>
+                        <p class="text-3xl font-en font-medium text-primary mt-1">¥1,200,000<span class="text-lg font-sans font-normal text-textSub">〜</span></p>
+                    </div>
+                    <ul class="text-sm text-textMain space-y-3 mb-8 flex-grow">
+                        <li class="flex items-start"><span class="text-primary mr-2">✓</span>全社業務ヒアリング</li>
+                        <li class="flex items-start"><span class="text-primary mr-2">✓</span>CRM設計</li>
+                        <li class="flex items-start"><span class="text-primary mr-2">✓</span>営業DX / マーケティングDX</li>
+                        <li class="flex items-start"><span class="text-primary mr-2">✓</span>高度な自動化</li>
+                        <li class="flex items-start"><span class="text-primary mr-2">✓</span>データ設計</li>
+                        <li class="flex items-start"><span class="text-primary mr-2">✓</span>外部システム連携</li>
+                        <li class="flex items-start"><span class="text-primary mr-2">✓</span>AI活用設計</li>
+                        <li class="flex items-start"><span class="text-primary mr-2">✓</span>KPI設計</li>
+                        <li class="flex items-start"><span class="text-primary mr-2">✓</span>定例ミーティング・継続改善</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <p class="text-sm text-textSub mt-8 text-center fade-up-element">
+                ※正式な料金は、要件確認後にお見積りいたします。
+            </p>
+
+            <div class="mt-20 fade-up-element">
+                <h3 class="text-xl font-medium text-primary mb-6">プラン比較</h3>
+                <div class="overflow-x-auto custom-scrollbar pb-4 border border-borderGray">
+                    <table class="w-full min-w-[800px] text-sm text-left">
+                        <thead class="bg-bgGray border-b border-borderGray">
+                            <tr>
+                                <th class="py-4 px-6 font-medium text-primary w-1/4">支援項目</th>
+                                <th class="py-4 px-6 font-medium text-primary font-en">STARTER</th>
+                                <th class="py-4 px-6 font-medium text-primary font-en">PROFESSIONAL</th>
+                                <th class="py-4 px-6 font-medium text-primary font-en">ENTERPRISE</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-borderGray">
+                            <tr>
+                                <td class="py-4 px-6 text-textMain">現状ヒアリング</td>
+                                <td class="py-4 px-6 text-center">○</td>
+                                <td class="py-4 px-6 text-center">○</td>
+                                <td class="py-4 px-6 text-center">○</td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 px-6 text-textMain">CRM初期構築</td>
+                                <td class="py-4 px-6 text-center">○</td>
+                                <td class="py-4 px-6 text-center">○</td>
+                                <td class="py-4 px-6 text-center">○</td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 px-6 text-textMain">営業プロセス設計</td>
+                                <td class="py-4 px-6 text-center text-textSub">—</td>
+                                <td class="py-4 px-6 text-center">○</td>
+                                <td class="py-4 px-6 text-center">○</td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 px-6 text-textMain">フォーム・Web連携</td>
+                                <td class="py-4 px-6 text-center text-textSub">—</td>
+                                <td class="py-4 px-6 text-center">○</td>
+                                <td class="py-4 px-6 text-center">○</td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 px-6 text-textMain">自動化</td>
+                                <td class="py-4 px-6 text-center text-textSub">—</td>
+                                <td class="py-4 px-6 text-center">△<br><span class="text-xs text-textSub">（基本機能）</span></td>
+                                <td class="py-4 px-6 text-center">◎<br><span class="text-xs text-textSub">（高度な構築）</span></td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 px-6 text-textMain">AI活用設計</td>
+                                <td class="py-4 px-6 text-center text-textSub">—</td>
+                                <td class="py-4 px-6 text-center">△<br><span class="text-xs text-textSub">（一部業務）</span></td>
+                                <td class="py-4 px-6 text-center">◎<br><span class="text-xs text-textSub">（全体設計）</span></td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 px-6 text-textMain">外部システム連携</td>
+                                <td class="py-4 px-6 text-center text-textSub">—</td>
+                                <td class="py-4 px-6 text-center text-textSub">—</td>
+                                <td class="py-4 px-6 text-center">○</td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 px-6 text-textMain">KPI・レポート設計</td>
+                                <td class="py-4 px-6 text-center text-textSub">—</td>
+                                <td class="py-4 px-6 text-center">○</td>
+                                <td class="py-4 px-6 text-center">◎</td>
+                            </tr>
+                            <tr>
+                                <td class="py-4 px-6 text-textMain">継続伴走</td>
+                                <td class="py-4 px-6 text-center text-textSub">導入後フォローのみ</td>
+                                <td class="py-4 px-6 text-center">○</td>
+                                <td class="py-4 px-6 text-center">◎<br><span class="text-xs text-textSub">（定例MTG含む）</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="process" class="py-24 md:py-32 bg-bgGray">
+        <div class="max-w-read mx-auto px-5 lg:px-8">
+            <span class="section-label fade-up-element text-center">07 / PROCESS</span>
+            <h2 class="text-3xl md:text-4xl font-medium text-primary text-center mb-16 fade-up-element">
+                お問い合わせから導入まで
+            </h2>
+
+            <div class="relative border-l border-borderGray ml-4 md:ml-8 fade-up-element">
+                <div class="mb-12 ml-8 relative">
+                    <div class="absolute -left-10 w-4 h-4 bg-primary border-4 border-bgGray box-content mt-1.5"></div>
+                    <span class="font-en text-sm text-textSub block mb-1">01</span>
+                    <h3 class="text-xl font-medium text-primary mb-2">無料相談</h3>
+                    <p class="text-textMain">現状の課題や、HubSpotで実現したいことについてお伺いします。</p>
+                </div>
+                <div class="mb-12 ml-8 relative">
+                    <div class="absolute -left-10 w-4 h-4 bg-primary border-4 border-bgGray box-content mt-1.5"></div>
+                    <span class="font-en text-sm text-textSub block mb-1">02</span>
+                    <h3 class="text-xl font-medium text-primary mb-2">現状ヒアリング</h3>
+                    <p class="text-textMain">具体的な業務フローやデータ管理の状況を詳細にヒアリングします。</p>
+                </div>
+                <div class="mb-12 ml-8 relative">
+                    <div class="absolute -left-10 w-4 h-4 bg-primary border-4 border-bgGray box-content mt-1.5"></div>
+                    <span class="font-en text-sm text-textSub block mb-1">03</span>
+                    <h3 class="text-xl font-medium text-primary mb-2">HubSpot活用・補助金活用の方向性を整理</h3>
+                    <p class="text-textMain">業務改善の方向性と、利用可能な補助金制度があるかを確認・整理します。</p>
+                </div>
+                <div class="mb-12 ml-8 relative">
+                    <div class="absolute -left-10 w-4 h-4 bg-primary border-4 border-bgGray box-content mt-1.5"></div>
+                    <span class="font-en text-sm text-textSub block mb-1">04</span>
+                    <h3 class="text-xl font-medium text-primary mb-2">支援プラン・お見積り</h3>
+                    <p class="text-textMain">貴社に最適な導入支援プランとお見積りをご提示し、契約へと進みます。</p>
+                </div>
+                <div class="mb-12 ml-8 relative">
+                    <div class="absolute -left-10 w-4 h-4 bg-primary border-4 border-bgGray box-content mt-1.5"></div>
+                    <span class="font-en text-sm text-textSub block mb-1">05</span>
+                    <h3 class="text-xl font-medium text-primary mb-2">HubSpot初期構築</h3>
+                    <p class="text-textMain">要件定義に基づき、実際にHubSpotの環境を構築します。</p>
+                </div>
+                <div class="mb-12 ml-8 relative">
+                    <div class="absolute -left-10 w-4 h-4 bg-primary border-4 border-bgGray box-content mt-1.5"></div>
+                    <span class="font-en text-sm text-textSub block mb-1">06</span>
+                    <h3 class="text-xl font-medium text-primary mb-2">運用開始</h3>
+                    <p class="text-textMain">社内向けの操作レクチャーを実施し、実務での運用をスタートします。</p>
+                </div>
+                <div class="ml-8 relative">
+                    <div class="absolute -left-10 w-4 h-4 bg-primary border-4 border-bgGray box-content mt-1.5"></div>
+                    <span class="font-en text-sm text-textSub block mb-1">07</span>
+                    <h3 class="text-xl font-medium text-primary mb-2">改善・AI活用</h3>
+                    <p class="text-textMain">運用状況を確認しながら、プロセスの改善やAIを活用した高度化を継続的に支援します。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 md:py-32 bg-white">
+        <div class="max-w-read mx-auto px-5 lg:px-8">
+            <span class="section-label fade-up-element text-center">08 / SUBSIDY</span>
+            <div class="border border-borderGray p-8 md:p-12 fade-up-element">
+                <h2 class="text-2xl md:text-3xl font-medium text-primary leading-tight mb-8">
+                    デジタル化・AI導入補助金を活用した<br>
+                    HubSpot導入をご検討の方へ
+                </h2>
+                <div class="text-base text-textMain leading-relaxed space-y-6 mb-10">
+                    <p>
+                        補助金を活用できる可能性がある場合でも、制度の対象要件や申請時期、対象となるITツール・経費などを確認する必要があります。
+                    </p>
+                    <p>
+                        「HubSpotを導入したいが、補助金を利用できるのかわからない」という段階でもご相談ください。現在の事業状況や導入目的に照らし合わせ、適切な選択肢を一緒に整理します。
+                    </p>
+                </div>
+                <div class="text-center">
+                    <a href="#contact" class="inline-flex justify-center items-center border border-primary text-primary font-medium px-8 py-4 hover:bg-bgGray transition-colors mb-6">
+                        補助金について相談する
+                    </a>
+                </div>
+                <div class="bg-bgGray p-4 text-sm text-textSub leading-relaxed">
+                    ※補助金の利用可否や採択を保証するものではありません。<br>
+                    ※最新の公募要領・制度内容をご確認ください。当社での支援が難しいケースもございます。
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 md:py-32 bg-bgGrayDark">
+        <div class="max-w-content mx-auto px-5 lg:px-8">
+            <span class="section-label fade-up-element">09 / FOLLOW UP</span>
+            <h2 class="text-3xl md:text-4xl font-medium text-primary leading-tight mb-16 fade-up-element">
+                導入して終わりではなく、<br>
+                一緒に改善していく。
+            </h2>
+
+            <div class="flex flex-wrap md:flex-nowrap items-center gap-4 text-primary font-medium text-sm md:text-base mb-16 fade-up-element border-y border-borderGray py-8">
+                <span>導入</span>
+                <span class="text-borderGray">→</span>
+                <span>利用開始</span>
+                <span class="text-borderGray">→</span>
+                <span class="text-accent">運用上の課題</span>
+                <span class="text-borderGray">→</span>
+                <span>改善</span>
+                <span class="text-borderGray">→</span>
+                <span>自動化</span>
+                <span class="text-borderGray">→</span>
+                <span>AI活用</span>
+                <span class="text-borderGray">→</span>
+                <span>データ活用</span>
+            </div>
+
+            <div class="max-w-read fade-up-element">
+                <p class="text-lg text-textMain leading-loose">
+                    実際に運用を始めると、「この項目は必要だった」「この作業は自動化できそう」といった新しい課題が見えてきます。<br><br>
+                    当社の伴走プランでは、導入後の運用状況を確認しながら、HubSpotの設定や業務フローを改善していきます。システムに合わせて業務を縛るのではなく、成長する組織に合わせてシステムをアップデートし続けます。
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <section id="faq" class="py-24 md:py-32 bg-white">
+        <div class="max-w-read mx-auto px-5 lg:px-8">
+            <span class="section-label fade-up-element text-center">10 / FAQ</span>
+            <h2 class="text-3xl md:text-4xl font-medium text-primary text-center mb-16 fade-up-element">
+                よくあるご質問
+            </h2>
+
+            <div class="border-t border-borderGray fade-up-element">
+                <!-- Vue Managed Accordion -->
+                <div v-for="(faq, index) in faqs" :key="index" class="border-b border-borderGray">
+                    <button 
+                        @click="toggleFaq(index)" 
+                        class="w-full text-left py-6 flex justify-between items-center focus:outline-none"
+                        :aria-expanded="faq.open"
+                    >
+                        <span class="text-lg font-medium text-primary pr-8 flex items-start">
+                            <span class="text-accent font-en mr-4 mt-0.5">Q.</span>
+                            {{ faq.q }}
+                        </span>
+                        <span class="text-borderGray transform transition-transform duration-300" :class="{'rotate-180': faq.open}">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+                        </span>
+                    </button>
+                    <div 
+                        v-show="faq.open" 
+                        class="pb-6 text-textMain leading-relaxed flex items-start"
+                        style="display: none;"
+                    >
+                        <span class="text-textSub font-en mr-4 mt-0.5">A.</span>
+                        <div>{{ faq.a }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 md:py-32 bg-primary">
+        <div class="max-w-read mx-auto px-5 lg:px-8 text-center fade-up-element">
+            <h2 class="text-3xl md:text-4xl font-medium text-white leading-tight mb-8">
+                まずは、<br>
+                現在の業務をお聞かせください。
+            </h2>
+            <p class="text-lg text-gray-300 leading-relaxed mb-12">
+                HubSpotを導入するべきかどうかも含めて、<br>
+                現在の業務や課題から一緒に整理します。
+            </p>
+            <a href="#contact" class="inline-flex justify-center items-center bg-white text-primary font-medium px-10 py-5 hover:bg-gray-100 transition-colors">
+                無料相談・お問い合わせ
+            </a>
+            <p class="text-sm text-gray-400 mt-6">
+                HubSpot未導入・導入検討段階のご相談も歓迎しています。
+            </p>
+        </div>
+    </section>
+
+    <section id="contact" class="py-24 md:py-32 bg-bgGray">
+        <div class="max-w-read mx-auto px-5 lg:px-8">
+            <span class="section-label fade-up-element text-center">11 / CONTACT</span>
+            <h2 class="text-3xl md:text-4xl font-medium text-primary text-center mb-6 fade-up-element">
+                お問い合わせ
+            </h2>
+            <p class="text-center text-textMain mb-12 fade-up-element">
+                サービス内容、料金、HubSpot導入、補助金活用など、<br>お気軽にお問い合わせください。
+            </p>
+
+            <div class="bg-white p-8 md:p-12 border border-borderGray fade-up-element">
+                
+                <!-- Success Message -->
+                <div v-if="formStatus === 'success'" class="text-center py-12">
+                    <div class="w-16 h-16 bg-bgGray rounded-full flex items-center justify-center mx-auto mb-6">
+                        <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="square" stroke-linejoin="miter" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+                    </div>
+                    <h3 class="text-2xl font-medium text-primary mb-4">お問い合わせありがとうございます。</h3>
+                    <p class="text-textMain">内容を確認のうえ、担当者よりご連絡いたします。</p>
+                </div>
+
+                <!-- Form -->
+                <form v-else @submit.prevent="submitForm" class="space-y-8">
+                    
+                    <!-- Errors -->
+                    <div v-if="formErrors.length > 0" class="bg-red-50 border border-red-200 p-4 mb-6">
+                        <ul class="text-sm text-red-600 list-disc list-inside">
+                            <li v-for="error in formErrors" :key="error">{{ error }}</li>
+                        </ul>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <label class="block text-sm font-medium text-primary mb-2">会社名 <span class="text-accent text-xs ml-1">*</span></label>
+                            <input type="text" v-model="form.company" class="w-full border border-borderGray px-4 py-3 focus:outline-none focus:border-primary transition-colors" placeholder="株式会社〇〇">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-primary mb-2">お名前 <span class="text-accent text-xs ml-1">*</span></label>
+                            <input type="text" v-model="form.name" class="w-full border border-borderGray px-4 py-3 focus:outline-none focus:border-primary transition-colors" placeholder="山田 太郎">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div>
+                            <label class="block text-sm font-medium text-primary mb-2">メールアドレス <span class="text-accent text-xs ml-1">*</span></label>
+                            <input type="email" v-model="form.email" class="w-full border border-borderGray px-4 py-3 focus:outline-none focus:border-primary transition-colors" placeholder="info@example.com">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-primary mb-2">電話番号</label>
+                            <input type="tel" v-model="form.phone" class="w-full border border-borderGray px-4 py-3 focus:outline-none focus:border-primary transition-colors" placeholder="03-1234-5678">
+                        </div>
+                    </div>
+
+                    <div class="border-t border-borderGray pt-8 mt-8">
+                        <label class="block text-sm font-medium text-primary mb-4">現在のHubSpot利用状況</label>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <label class="flex items-center p-3 border border-borderGray cursor-pointer hover:bg-bgGray">
+                                <input type="radio" v-model="form.hubspotStatus" value="未導入" class="mr-3 text-primary focus:ring-primary h-4 w-4">
+                                <span class="text-sm">未導入</span>
+                            </label>
+                            <label class="flex items-center p-3 border border-borderGray cursor-pointer hover:bg-bgGray">
+                                <input type="radio" v-model="form.hubspotStatus" value="導入検討中" class="mr-3 text-primary focus:ring-primary h-4 w-4">
+                                <span class="text-sm">導入検討中</span>
+                            </label>
+                            <label class="flex items-center p-3 border border-borderGray cursor-pointer hover:bg-bgGray">
+                                <input type="radio" v-model="form.hubspotStatus" value="すでに利用中" class="mr-3 text-primary focus:ring-primary h-4 w-4">
+                                <span class="text-sm">すでに利用中</span>
+                            </label>
+                            <label class="flex items-center p-3 border border-borderGray cursor-pointer hover:bg-bgGray">
+                                <input type="radio" v-model="form.hubspotStatus" value="他社からの乗り換え" class="mr-3 text-primary focus:ring-primary h-4 w-4">
+                                <span class="text-sm">他社からの乗り換え</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-primary mb-4">検討しているプラン</label>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <label class="flex items-center p-3 border border-borderGray cursor-pointer hover:bg-bgGray">
+                                <input type="radio" v-model="form.plan" value="Starter" class="mr-3 text-primary focus:ring-primary h-4 w-4">
+                                <span class="text-sm font-en">Starter</span>
+                            </label>
+                            <label class="flex items-center p-3 border border-borderGray cursor-pointer hover:bg-bgGray">
+                                <input type="radio" v-model="form.plan" value="Professional" class="mr-3 text-primary focus:ring-primary h-4 w-4">
+                                <span class="text-sm font-en">Professional</span>
+                            </label>
+                            <label class="flex items-center p-3 border border-borderGray cursor-pointer hover:bg-bgGray">
+                                <input type="radio" v-model="form.plan" value="Enterprise" class="mr-3 text-primary focus:ring-primary h-4 w-4">
+                                <span class="text-sm font-en">Enterprise</span>
+                            </label>
+                            <label class="flex items-center p-3 border border-borderGray cursor-pointer hover:bg-bgGray">
+                                <input type="radio" v-model="form.plan" value="まだ決まっていない" class="mr-3 text-primary focus:ring-primary h-4 w-4">
+                                <span class="text-sm">まだ決まっていない</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label class="block text-sm font-medium text-primary mb-4">補助金の利用</label>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <label class="flex items-center p-3 border border-borderGray cursor-pointer hover:bg-bgGray">
+                                <input type="radio" v-model="form.subsidy" value="検討している" class="mr-3 text-primary focus:ring-primary h-4 w-4">
+                                <span class="text-sm">検討している</span>
+                            </label>
+                            <label class="flex items-center p-3 border border-borderGray cursor-pointer hover:bg-bgGray">
+                                <input type="radio" v-model="form.subsidy" value="相談したい" class="mr-3 text-primary focus:ring-primary h-4 w-4">
+                                <span class="text-sm">相談したい</span>
+                            </label>
+                            <label class="flex items-center p-3 border border-borderGray cursor-pointer hover:bg-bgGray">
+                                <input type="radio" v-model="form.subsidy" value="利用予定なし" class="mr-3 text-primary focus:ring-primary h-4 w-4">
+                                <span class="text-sm">利用予定なし</span>
+                            </label>
+                            <label class="flex items-center p-3 border border-borderGray cursor-pointer hover:bg-bgGray">
+                                <input type="radio" v-model="form.subsidy" value="わからない" class="mr-3 text-primary focus:ring-primary h-4 w-4">
+                                <span class="text-sm">わからない</span>
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="border-t border-borderGray pt-8 mt-8">
+                        <label class="block text-sm font-medium text-primary mb-2">ご相談内容 <span class="text-accent text-xs ml-1">*</span></label>
+                        <textarea v-model="form.message" rows="6" class="w-full border border-borderGray px-4 py-3 focus:outline-none focus:border-primary transition-colors" placeholder="現在の業務課題や、HubSpotで実現したいことなどをご自由にお書きください。"></textarea>
+                    </div>
+
+                    <div class="pt-4">
+                        <label class="flex items-start cursor-pointer">
+                            <input type="checkbox" v-model="form.consent" class="mt-1 mr-3 text-primary focus:ring-primary h-4 w-4">
+                            <span class="text-sm text-textMain leading-relaxed">
+                                <a href="#" class="text-primary underline">個人情報保護方針</a>に同意する <span class="text-accent text-xs">*</span>
+                            </span>
+                        </label>
+                    </div>
+
+                    <div class="pt-6 text-center">
+                        <button type="submit" :disabled="formStatus === 'submitting'" class="bg-primary text-white font-medium px-12 py-4 hover:bg-opacity-90 transition-colors w-full md:w-auto disabled:opacity-50">
+                            {{ formStatus === 'submitting' ? '送信中...' : 'お問い合わせを送信する' }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-white py-12 border-t border-borderGray">
+        <div class="max-w-content mx-auto px-5 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-6">
+            <div>
+                <a href="#" class="block text-primary font-en font-semibold tracking-wider text-base mb-1">HubSpot IMPLEMENTATION</a>
+                <span class="text-xs text-textSub">HubSpot導入支援・伴走プラン</span>
+            </div>
+            
+            <nav class="flex flex-wrap justify-center gap-6 text-sm text-textSub">
+                <a href="#" class="hover:text-primary transition-colors">会社情報</a>
+                <a href="#" class="hover:text-primary transition-colors">プライバシーポリシー</a>
+                <a href="#contact" class="hover:text-primary transition-colors">お問い合わせ</a>
+            </nav>
+        </div>
+        <div class="max-w-content mx-auto px-5 lg:px-8 mt-12 text-center text-xs text-borderGray-400">
+            &copy; 2026 HubSpot Implementation Support. All rights reserved.
+        </div>
+    </footer>
+
+</div>
+
+<script>
+    const { createApp, ref, onMounted, nextTick } = Vue;
+
+    const App = {
+        setup() {
+            // Header Scroll State
+            const isScrolled = ref(false);
+            
+            // Mobile Menu State
+            const isMobileMenuOpen = ref(false);
+            const toggleMobileMenu = () => {
+                isMobileMenuOpen.value = !isMobileMenuOpen.value;
+            };
+
+            // FAQ State
+            const faqs = ref([
+                { 
+                    q: 'HubSpotを初めて使う会社でも対応できますか？', 
+                    a: 'はい。現状の業務をヒアリングしたうえで、必要な機能や運用方法から一緒に整理します。', 
+                    open: false 
+                },
+                { 
+                    q: 'すでにHubSpotを導入している場合も依頼できますか？', 
+                    a: '可能です。既存設定の確認や運用上の課題を整理し、改善案をご提案します。', 
+                    open: false 
+                },
+                { 
+                    q: 'HubSpotの料金とは別に支援費用が必要ですか？', 
+                    a: 'はい。当社の導入支援・構築・伴走費用と、HubSpotのサービス利用料金は別となります。', 
+                    open: false 
+                },
+                { 
+                    q: 'Starterから始めて後から上位プランに変更できますか？', 
+                    a: '可能です。事業の成長や利用範囲に合わせて、必要な支援内容を見直します。', 
+                    open: false 
+                },
+                { 
+                    q: '補助金を利用できるか相談できますか？', 
+                    a: '可能です。利用可能性について状況を伺い、対象制度・要件等を確認しながらご案内します。', 
+                    open: false 
+                },
+                { 
+                    q: '補助金の申請だけ依頼できますか？', 
+                    a: '補助金制度によって支援可能な範囲が異なるため、まずはご相談ください。', 
+                    open: false 
+                },
+                { 
+                    q: 'AIについて詳しくなくても大丈夫ですか？', 
+                    a: '問題ありません。現在の業務を確認し、AIを活用できるポイントから整理します。', 
+                    open: false 
+                },
+                { 
+                    q: 'WebサイトがWordPressでも対応できますか？', 
+                    a: 'はい。WordPressを含む既存Webサイトとの連携についても要件を確認したうえで対応方法をご提案します。', 
+                    open: false 
+                },
+                { 
+                    q: '既存のCRMからデータ移行できますか？', 
+                    a: 'データ形式や件数、現在のシステムを確認したうえで移行方法をご提案します。', 
+                    open: false 
+                },
+                { 
+                    q: '導入後もサポートしてもらえますか？', 
+                    a: 'はい。プランに応じて導入後の運用支援・改善支援にも対応します。', 
+                    open: false 
+                }
+            ]);
+
+            const toggleFaq = (index) => {
+                faqs.value[index].open = !faqs.value[index].open;
+            };
+
+            // Form State
+            const form = ref({
+                company: '', name: '', email: '', phone: '',
+                hubspotStatus: '', plan: '', subsidy: '', message: '', consent: false
+            });
+            const formStatus = ref('idle');
+            const formErrors = ref([]);
+
+            const submitForm = () => {
+                formErrors.value = [];
+                if(!form.value.company) formErrors.value.push('会社名は必須です。');
+                if(!form.value.name) formErrors.value.push('お名前は必須です。');
+                if(!form.value.email) formErrors.value.push('メールアドレスは必須です。');
+                if(!form.value.message) formErrors.value.push('ご相談内容は必須です。');
+                if(!form.value.consent) formErrors.value.push('個人情報保護方針への同意が必要です。');
+                
+                if(formErrors.value.length > 0) return;
+                
+                formStatus.value = 'submitting';
+                // Simulate API call
+                setTimeout(() => {
+                    formStatus.value = 'success';
+                }, 1500);
+            };
+
+            // Animations setup (anime.js + IntersectionObserver)
+            const initAnimations = () => {
+                const observer = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            const target = entry.target;
+                            if (!target.classList.contains('animated')) {
+                                const delay = target.dataset.delay ? parseInt(target.dataset.delay) : 0;
+                                anime({
+                                    targets: target,
+                                    opacity: [0, 1],
+                                    translateY: [30, 0],
+                                    duration: 800,
+                                    easing: 'easeOutQuart',
+                                    delay: delay
+                                });
+                                target.classList.add('animated');
+                            }
+                        }
+                    });
+                }, { threshold: 0.15, rootMargin: "0px 0px -50px 0px" });
+
+                document.querySelectorAll('.fade-up-element').forEach(el => {
+                    observer.observe(el);
+                });
+            };
+
+            // Canvas Background (Subtle network effect)
+            const initHeroCanvas = () => {
+                const canvas = document.getElementById('hero-canvas');
+                if (!canvas) return;
+                const ctx = canvas.getContext('2d');
+                let width = canvas.width = canvas.offsetWidth;
+                let height = canvas.height = canvas.offsetHeight;
+                
+                const particles = [];
+                // Number of particles depends on screen size but keep it subtle
+                const particleCount = window.innerWidth > 768 ? 40 : 20;
+                
+                for(let i = 0; i < particleCount; i++) {
+                    particles.push({
+                        x: Math.random() * width,
+                        y: Math.random() * height,
+                        vx: (Math.random() - 0.5) * 0.3,
+                        vy: (Math.random() - 0.5) * 0.3,
+                    });
+                }
+                
+                const draw = () => {
+                    ctx.clearRect(0, 0, width, height);
+                    
+                    // Subtle colors matching the theme
+                    ctx.fillStyle = 'rgba(33, 53, 69, 0.1)';
+                    ctx.strokeStyle = 'rgba(33, 53, 69, 0.03)';
+                    ctx.lineWidth = 1;
+                    
+                    for(let i = 0; i < particleCount; i++) {
+                        const p = particles[i];
+                        p.x += p.vx;
+                        p.y += p.vy;
+                        
+                        if(p.x < 0 || p.x > width) p.vx *= -1;
+                        if(p.y < 0 || p.y > height) p.vy *= -1;
+                        
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, 1.5, 0, Math.PI * 2);
+                        ctx.fill();
+                        
+                        for(let j = i + 1; j < particleCount; j++) {
+                            const p2 = particles[j];
+                            const dist = Math.sqrt((p.x - p2.x)**2 + (p.y - p2.y)**2);
+                            if(dist < 150) {
+                                ctx.beginPath();
+                                ctx.moveTo(p.x, p.y);
+                                ctx.lineTo(p2.x, p2.y);
+                                ctx.stroke();
+                            }
+                        }
+                    }
+                    requestAnimationFrame(draw);
+                };
+                
+                draw();
+                
+                window.addEventListener('resize', () => {
+                    width = canvas.width = canvas.offsetWidth;
+                    height = canvas.height = canvas.offsetHeight;
+                });
+            };
+
+            onMounted(() => {
+                // Remove cloak
+                document.querySelector('[v-cloak]')?.removeAttribute('v-cloak');
+                
+                // Handle scroll for header
+                window.addEventListener('scroll', () => {
+                    isScrolled.value = window.scrollY > 20;
+                });
+
+                nextTick(() => {
+                    initAnimations();
+                    initHeroCanvas();
+                });
+            });
+
+            return {
+                isScrolled,
+                isMobileMenuOpen, toggleMobileMenu,
+                faqs, toggleFaq,
+                form, formStatus, formErrors, submitForm
+            }
+        }
+    };
+
+    createApp(App).mount('#app');
+</script>
+</body>
+</html>
